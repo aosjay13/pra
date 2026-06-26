@@ -31,7 +31,7 @@ jobs:
       - name: Prepare site
         run: |
           mkdir _site
-          cp *.html .nojekyll _site/
+          cp *.html *.png .nojekyll _site/
           [ -d assets ] && cp -r assets _site/ || true
 
       - name: Upload artifact
