@@ -7,14 +7,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GitbookIO/javascript.git"
+    "url": "git+https://github.com/aosjay13/pra.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Prodigy Racing Association",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/GitbookIO/javascript/issues"
+    "url": "https://github.com/aosjay13/pra/issues"
   },
-  "homepage": "https://github.com/GitbookIO/javascript#readme"
+  "homepage": "https://aosjay13.github.io/pra/"
 }
