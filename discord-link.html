@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* --- DISCORD THEME COLORS --- */
+  :root {
+    --discord-bg: #313338;       /* Modern Discord Dark Background */
+    --discord-card: #2b2d31;     /* Card Background */
+    --discord-blurple: #5865F2;  /* Brand Color */
+    --discord-blurple-dark: #4752c4;
+    --discord-text: #dbdee1;     /* Main Text */
+    --discord-text-muted: #949ba4;
+    --discord-green: #23a559;    /* Online/Active Green */
+  }
+
+  /* --- SCROLLBAR SETTINGS --- */
+  body::-webkit-scrollbar { width: 14px; }
+  body::-webkit-scrollbar-track { background: #2b2d31; }
+  body::-webkit-scrollbar-thumb { background-color: #1a1b1e; border-radius: 7px; border: 3px solid #2b2d31; }
+  html { scrollbar-width: auto; scrollbar-color: #1a1b1e #2b2d31; }
+
+  /* General Page Settings */
+  body {
+    font-family: 'gg sans', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    color: var(--discord-text);
+    background-color: var(--discord-bg);
+    margin: 0;
+    /* Reduced padding to push content higher up */
+    padding: 10px; 
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Removed vertical centering (justify-content) to prevent push-down */
+  }
+
+  /* Main Card */
+  .discord-card {
+    background-color: var(--discord-card);
+    border-radius: 8px;
+    padding: 30px; /* Reduced from 40px */
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.24);
+    text-align: center;
+    transition: transform 0.2s;
+    box-sizing: border-box;
+  }
+
+  .discord-card:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Logo Styling */
+  .logo-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 15px; /* Reduced margin */
+  }
+
+  .logo-img {
+    width: 100px; /* Reduced from 120px */
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #1e1f22;
+    border: 4px solid var(--discord-card);
+    box-shadow: 0 0 0 2px var(--discord-green);
+  }
+
+  /* Status Indicator */
+  .status-dot {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 22px;
+    height: 22px;
+    background-color: var(--discord-green);
+    border-radius: 50%;
+    border: 4px solid var(--discord-card);
+  }
+
+  /* Typography */
+  h1 {
+    color: #fff;
+    margin: 5px 0;
+    font-size: 1.6em;
+    font-weight: 700;
+  }
+
+  h2 {
+    color: var(--discord-text-muted);
+    font-size: 0.95em;
+    font-weight: normal;
+    margin: 0 0 20px 0; /* Reduced margin */
+  }
+
+  p {
+    color: var(--discord-text);
+    margin-bottom: 25px;
+    font-size: 1em;
+  }
+
+  /* Join Button */
+  .join-btn {
+    display: block;
+    width: 100%;
+    background-color: var(--discord-blurple);
+    color: white;
+    font-weight: 600;
+    font-size: 1.1em;
+    padding: 12px 0; /* Slightly more compact */
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    box-sizing: border-box;
+  }
+
+  .join-btn:hover {
+    background-color: var(--discord-blurple-dark);
+  }
+
+  /* Footer Info */
+  .footer-info {
+    margin-top: 15px;
+    font-size: 0.8em;
+    color: var(--discord-text-muted);
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="discord-card">
+    
+    <!-- Logo with "Online" Status -->
+    <div class="logo-container">
+      <img src="https://i.imgur.com/9b9Ezsw.png" alt="PRA Discord" class="logo-img">
+      <div class="status-dot"></div>
+    </div>
+
+    <h1>Prodigy Racing Association</h1>
+    <h2>Official Community Server</h2>
+
+    <p>
+      Join the conversation! This is where we host voice chats for races, share setups, post announcements, and hang out.
+    </p>
+
+    <!-- The Link provided -->
+    <a href="https://discord.com/servers/prodigy-racing-association-1079774188509876236" target="_blank" class="join-btn">
+      Join Server
+    </a>
+
+    <div class="footer-info">
+      You will be redirected to Discord
+    </div>
+
+  </div>
+
+</body>
+</html>

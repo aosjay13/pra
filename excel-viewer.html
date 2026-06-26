@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Viewer from OneDrive</title>
+    <style>
+        /* --- GLOBAL STYLES (DARK MODE) --- */
+        :root {
+            --pra-red: #cc0000;
+            --pra-red-dark: #a30000;
+            --pra-dark: #0a0a0a;      /* Darker Header */
+            --pra-bg: #121212;        /* Main Background */
+            --pra-card-bg: #1e1e1e;   /* Card Background */
+            --pra-border: #333;       /* Border Color */
+            
+            /* Text Colors */
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            
+            /* Special Box Colors (Dark Variants) */
+            --box-red-bg: #2a0a0a;
+            --box-blue-bg: #0a1a2a;
+            --box-blue-border: #0078d4;
+        }
+
+        /* Force Scrollbar (Dark Themed) */
+        body::-webkit-scrollbar { width: 16px; }
+        body::-webkit-scrollbar-track { background: var(--pra-bg); border-left: 1px solid var(--pra-border); }
+        body::-webkit-scrollbar-thumb { background-color: #444; border-radius: 8px; border: 3px solid var(--pra-bg); }
+        
+        /* FIX: Explicitly set HTML background to match body to prevent white lines at top/bottom */
+        html { 
+            scrollbar-width: auto; 
+            scrollbar-color: #444 var(--pra-bg); 
+            background-color: var(--pra-bg); 
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--pra-bg);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            min-height: 100%;
+        }
+
+        h1, h2, h3 {
+            color: var(--text-main);
+        }
+
+        input[type="file"], input[type="text"], input[type="number"], input[type="color"] {
+            background-color: var(--pra-card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--pra-border);
+            padding: 10px;
+            margin: 5px;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: var(--pra-red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: var(--pra-red-dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: var(--pra-card-bg);
+            color: var(--text-main);
+        }
+
+        th, td {
+            border: 1px solid var(--pra-border);
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--pra-dark);
+            color: var(--text-main);
+        }
+
+        .preview {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--pra-border);
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: var(--pra-card-bg);
+        }
+
+        .customize {
+            margin-bottom: 20px;
+        }
+
+        .customize label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        .customize input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        textarea {
+            background-color: var(--pra-card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--pra-border);
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        select {
+            background-color: var(--pra-card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--pra-border);
+            padding: 10px;
+            margin: 5px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Excel Spreadsheet Viewer</h1>
+    <p>Select your Excel file (download it from OneDrive first):</p>
+    <input type="file" id="excelFile" accept=".xlsx,.xls">
+    <button onclick="loadExcel()">Load Excel</button>
+
+    <div id="sheetSection" style="display: none; margin-top: 10px;">
+        <label for="sheetSelect">Select Sheet:</label>
+        <select id="sheetSelect" onchange="loadSheet()"></select>
+    </div>
+
+    <div id="rangeSection" style="display: none; margin-top: 10px;">
+        <h2>Select Data Range</h2>
+        <label>Start Row (1-based): <input type="number" id="startRow" min="1"></label>
+        <label>End Row: <input type="number" id="endRow" min="1"></label><br>
+        <label>Start Column (1-based): <input type="number" id="startCol" min="1"></label>
+        <label>End Column: <input type="number" id="endCol" min="1"></label><br>
+        <button onclick="setRange()">Set Range</button>
+    </div>
+
+    <div id="previewSection" style="display: none;">
+        <h2>Preview</h2>
+        <div class="preview" id="previewTable"></div>
+    </div>
+
+    <div id="customizeSection" style="display: none;">
+        <h2>Customize View</h2>
+        <h3>Select Columns to Display</h3>
+        <div class="customize" id="columnSelectors"></div>
+        <button onclick="applyCustomization()">Apply Customization</button>
+    </div>
+
+    <div id="styleSection" style="display: none;">
+        <h2>Styling Options</h2>
+        <label>Background Color: <input type="color" id="bgColor" value="#ffffff"></label><br>
+        <label>Text Color: <input type="color" id="textColor" value="#000000"></label><br>
+        <label>Font Family: <input type="text" id="fontFamily" value="Arial"></label><br>
+        <label>Font Size: <input type="number" id="fontSize" value="14">px</label><br>
+        <label>Logo URL: <input type="text" id="logoUrl" placeholder="https://example.com/logo.png"></label><br>
+        <button onclick="applyStyling()">Apply Styling</button>
+    </div>
+
+    <div id="displaySection" style="display: none;">
+        <h2>Customized Table</h2>
+        <table id="customTable"></table>
+        <button onclick="generateEmbedCode()">Generate Embed Code</button>
+        <div id="embedCodeSection" style="display: none; margin-top: 20px;">
+            <h3>Embed Code</h3>
+            <textarea id="embedCode" rows="10" cols="80" readonly></textarea>
+            <button onclick="copyEmbedCode()">Copy to Clipboard</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        let workbook;
+        let worksheet;
+        let data = [];
+        let headers = [];
+        let currentSheetName;
+        let slicedData = [];
+        let slicedHeaders = [];
+
+        function loadExcel() {
+            const fileInput = document.getElementById('excelFile');
+            const file = fileInput.files[0];
+            if (!file) {
+                alert('Please select an Excel file.');
+                return;
+            }
+
+            console.log('Loading Excel file:', file.name);
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                console.log('File read successfully');
+                const buffer = e.target.result;
+                try {
+                    workbook = XLSX.read(buffer, { type: 'array' });
+                    console.log('Workbook loaded, sheets:', workbook.SheetNames);
+                    populateSheetSelect();
+                    currentSheetName = workbook.SheetNames[0];
+                    loadSheet();
+                } catch (error) {
+                    console.error('Error reading Excel:', error);
+                    alert('Error reading Excel file: ' + error.message);
+                }
+            };
+            reader.onerror = function() {
+                console.error('File read error');
+                alert('Error reading file');
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function populateSheetSelect() {
+            const select = document.getElementById('sheetSelect');
+            select.innerHTML = '';
+            if (workbook.SheetNames.length === 0) {
+                alert('No sheets found in the Excel file.');
+                return;
+            }
+            workbook.SheetNames.forEach(sheetName => {
+                const option = document.createElement('option');
+                option.value = sheetName;
+                option.textContent = sheetName;
+                select.appendChild(option);
+            });
+            document.getElementById('sheetSection').style.display = 'block';
+        }
+
+        function setRange() {
+            const startRow = parseInt(document.getElementById('startRow').value) - 1;
+            const endRow = parseInt(document.getElementById('endRow').value);
+            const startCol = parseInt(document.getElementById('startCol').value) - 1;
+            const endCol = parseInt(document.getElementById('endCol').value);
+
+            slicedData = data.slice(startRow, endRow).map(row => row.slice(startCol, endCol));
+            slicedHeaders = headers.slice(startCol, endCol);
+
+            showPreview();
+            showCustomize();
+        }
+
+        function loadSheet() {
+            const select = document.getElementById('sheetSelect');
+            currentSheetName = select.value;
+            console.log('Loading sheet:', currentSheetName);
+            worksheet = workbook.Sheets[currentSheetName];
+            data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            console.log('Data loaded, rows:', data.length);
+            headers = data[0] || [];
+            data.shift(); // Remove header row from data
+
+            slicedData = data;
+            slicedHeaders = headers;
+
+            document.getElementById('startRow').value = 1;
+            document.getElementById('endRow').value = data.length;
+            document.getElementById('startCol').value = 1;
+            document.getElementById('endCol').value = headers.length;
+            document.getElementById('rangeSection').style.display = 'block';
+
+            showPreview();
+            showCustomize();
+        }
+
+        function showPreview() {
+            const previewDiv = document.getElementById('previewTable');
+            previewDiv.innerHTML = generatePreviewTableHTML(slicedHeaders, slicedData);
+            document.getElementById('previewSection').style.display = 'block';
+        }
+
+        function showCustomize() {
+            const selectorsDiv = document.getElementById('columnSelectors');
+            selectorsDiv.innerHTML = '';
+            slicedHeaders.forEach((header, index) => {
+                const label = document.createElement('label');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = true;
+                checkbox.value = index;
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(header));
+                selectorsDiv.appendChild(label);
+            });
+            document.getElementById('customizeSection').style.display = 'block';
+            document.getElementById('styleSection').style.display = 'block';
+        }
+
+        function applyCustomization() {
+            const selectedColumns = Array.from(document.querySelectorAll('#columnSelectors input:checked')).map(cb => parseInt(cb.value));
+            const selectedRows = Array.from(document.querySelectorAll('#previewTable .rowSelect:checked')).map(cb => parseInt(cb.value));
+            const selectedHeaders = selectedColumns.map(i => slicedHeaders[i]);
+            const selectedData = selectedRows.map(i => slicedData[i]).map(row => selectedColumns.map(i => row[i]));
+
+            const table = document.getElementById('customTable');
+            table.innerHTML = generateTableHTML(selectedHeaders, selectedData);
+            document.getElementById('displaySection').style.display = 'block';
+            applyStyling();
+        }
+
+        function applyStyling() {
+            const table = document.getElementById('customTable');
+            const bgColor = document.getElementById('bgColor').value;
+            const textColor = document.getElementById('textColor').value;
+            const fontFamily = document.getElementById('fontFamily').value;
+            const fontSize = document.getElementById('fontSize').value;
+            const logoUrl = document.getElementById('logoUrl').value;
+
+            table.style.backgroundColor = bgColor;
+            table.style.color = textColor;
+            table.style.fontFamily = fontFamily;
+            table.style.fontSize = fontSize + 'px';
+
+            // Apply to cells
+            const cells = table.querySelectorAll('th, td');
+            cells.forEach(cell => {
+                cell.style.color = textColor;
+                cell.style.fontFamily = fontFamily;
+                cell.style.fontSize = fontSize + 'px';
+            });
+
+            // Add logo
+            let logoDiv = document.getElementById('logoDiv');
+            if (!logoDiv) {
+                logoDiv = document.createElement('div');
+                logoDiv.id = 'logoDiv';
+                document.getElementById('displaySection').insertBefore(logoDiv, table);
+            }
+            if (logoUrl) {
+                logoDiv.innerHTML = `<img src="${logoUrl}" alt="Logo" style="max-width: 200px; max-height: 100px;">`;
+            } else {
+                logoDiv.innerHTML = '';
+            }
+        }
+        function generateTableHTML(headers, data) {
+            let html = '<thead><tr>';
+            headers.forEach(header => {
+                html += `<th>${header}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            data.forEach(row => {
+                html += '<tr>';
+                row.forEach(cell => {
+                    html += `<td>${cell || ''}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody>';
+            return html;
+        }
+        function generatePreviewTableHTML(headers, data) {
+            let html = '<table><thead><tr><th>Select</th>';
+            headers.forEach(header => {
+                html += `<th>${header}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            data.forEach((row, index) => {
+                html += `<tr><td><input type="checkbox" class="rowSelect" value="${index}" checked></td>`;
+                row.forEach(cell => {
+                    html += `<td>${cell || ''}</td>`;
+                });
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+            return html;
+        }
+
+        function copyEmbedCode() {
+            const textarea = document.getElementById('embedCode');
+            textarea.select();
+            document.execCommand('copy');
+            alert('Embed code copied to clipboard!');
+        }
+    </script>
+</body>
+</html>

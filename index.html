@@ -1,0 +1,2577 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* --- GLOBAL STYLES (DARK MODE) --- */
+  :root {
+    --pra-red: #cc0000;
+    --pra-red-dark: #a30000;
+    --pra-dark: #0a0a0a;      /* Darker Header */
+    --pra-bg: #121212;        /* Main Background */
+    --pra-card-bg: #1e1e1e;   /* Card Background */
+    --pra-border: #333;       /* Border Color */
+    
+    /* Text Colors */
+    --text-main: #e0e0e0;
+    --text-muted: #a0a0a0;
+    
+    /* Special Box Colors (Dark Variants) */
+    --box-red-bg: #2a0a0a;
+    --box-blue-bg: #0a1a2a;
+    --box-blue-border: #0078d4;
+  }
+
+  /* Force Scrollbar (Dark Themed) */
+  body::-webkit-scrollbar { width: 16px; }
+  body::-webkit-scrollbar-track { background: var(--pra-bg); border-left: 1px solid var(--pra-border); }
+  body::-webkit-scrollbar-thumb { background-color: #444; border-radius: 8px; border: 3px solid var(--pra-bg); }
+  
+  /* FIX: Explicitly set HTML background to match body to prevent white lines at top/bottom */
+  html { 
+    scrollbar-width: auto; 
+    scrollbar-color: #444 var(--pra-bg); 
+    background-color: var(--pra-bg); 
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-main);
+    background-color: var(--pra-bg);
+    margin: 0;
+    padding: 0;
+    /* PADDING TOP will be set dynamically by JavaScript */
+    padding-bottom: 60px;
+    overflow-y: auto;
+    text-align: center;
+    min-height: 100%;
+  }
+
+  /* --- HEADER & NAVIGATION (FIXED POSITION) --- */
+  .app-header {
+    background-color: var(--pra-dark);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 5px solid var(--pra-red);
+    
+    /* FIX: Change to Fixed to eliminate top gap */
+    position: fixed; 
+    top: 0;
+    left: 0;
+    right: 0; /* Ensures it spans full width */
+    z-index: 1000; /* High Z-index to stay on top */
+    
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+  }
+
+  .app-title {
+    margin: 0 !important; /* Force margin 0 */
+    text-transform: uppercase;
+    font-size: 1.8em;
+    letter-spacing: 1px;
+    color: white;
+    line-height: 1.2;
+  }
+
+  .nav-bar {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .nav-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: #ccc;
+    padding: 8px 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 0.9em;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-btn img {
+    height: 24px;
+    width: auto;
+    display: block;
+  }
+
+  .nav-btn:hover, .nav-btn.active {
+    background-color: var(--pra-red);
+    border-color: var(--pra-red);
+    color: white;
+  }
+
+  /* --- SERIES NAVIGATION (Horizontal Button Bar) --- */
+  .series-nav-bar {
+    margin: 15px 0 25px 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  .series-nav-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: #ccc;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9em;
+    border-radius: 4px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .series-nav-btn img {
+    height: 20px;
+    width: auto;
+    display: block;
+  }
+
+  .series-nav-btn:hover {
+    background-color: var(--pra-red);
+    border-color: var(--pra-red);
+    color: white;
+  }
+
+  .series-nav-btn.btn-gf:hover {
+    background-color: #D93300;
+    border-color: #D93300;
+  }
+
+  /* --- VIEW CONTAINER --- */
+  .view-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .view-section {
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .view-section.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- TYPOGRAPHY & UI --- */
+  h1 { color: var(--pra-red); text-transform: uppercase; border-bottom: 3px solid var(--pra-border); padding-bottom: 10px; margin-top: 0; }
+  h2 { color: white; margin-top: 30px; font-weight: bold; border-bottom: 1px solid var(--pra-border); padding-bottom: 5px; }
+  h3 { color: #ccc; font-size: 1.1em; margin-top: 20px; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
+  
+  p { color: var(--text-main); }
+  
+  .text-left { text-align: left; }
+
+  .btn {
+    display: inline-block;
+    background-color: var(--pra-red);
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .btn:hover { background-color: var(--pra-red-dark); }
+
+  .btn-discord { background-color: #5865F2; }
+  .btn-discord:hover { background-color: #4752c4; }
+
+  .btn-gf { background-color: #FF3D00; }
+  .btn-gf:hover { background-color: #D93300; }
+
+  .btn-back { background-color: #333; margin-bottom: 15px; color: #ccc; }
+  .btn-back:hover { background-color: #444; }
+
+  /* --- SPECIAL BOXES (Rules/Penalties - Dark Mode) --- */
+  .penalty-box {
+    background-color: var(--box-red-bg);
+    border-left: 5px solid var(--pra-red);
+    padding: 15px;
+    margin: 10px 0;
+    text-align: left;
+    color: #ffcccc;
+  }
+
+  .note-box {
+    background-color: var(--box-blue-bg);
+    border-left: 5px solid var(--box-blue-border);
+    padding: 15px;
+    margin: 10px 0;
+    font-size: 0.95em;
+    text-align: left;
+    color: #cceeff;
+  }
+
+  /* --- CARDS (Home) --- */
+  .grid-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; }
+  .card {
+    background: var(--pra-card-bg);
+    border: 1px solid var(--pra-border);
+    border-radius: 8px;
+    flex: 1 1 225px; 
+    max-width: 285px; 
+    min-width: 210px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3); /* Darker shadow */
+    text-align: center;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .card:hover { transform: translateY(-5px); border-color: var(--pra-red); }
+
+  /* Logo Box - UPDATED TO DARK BACKGROUND */
+  .logo-box {
+    background: #111; /* Changed from white to dark grey */
+    padding: 10px; 
+    border-radius: 4px; 
+    border: 1px solid #333;
+    height: 120px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin-bottom: 15px;
+  }
+  .logo-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+  /* --- SCHEDULE GRID SYSTEM --- */
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(290px, 1fr)); /* Increased min-width by 100px for wider cards */
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  /* Make the card span nicely in responsive views */
+  .schedule-card {
+    background: var(--pra-card-bg);
+    border: 1px solid var(--pra-border);
+    border-radius: 8px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 600px; /* Increased by 300px for better screen utilization */
+    overflow-y: auto; /* Add scroll if content exceeds height */
+  }
+
+  .schedule-card:hover { border-color: var(--pra-red); }
+
+  @media (max-width: 1400px) {
+    .schedule-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .schedule-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .schedule-grid { grid-template-columns: 1fr; }
+  }
+
+  .day-header { background: #222; color: white; padding: 12px; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid var(--pra-red); border-radius: 8px 8px 0 0; }
+  .day-content { padding: 10px; text-align: left; flex-grow: 1; display: flex; flex-direction: column; }
+  
+  .event-item { 
+    border-left: 4px solid var(--pra-red); 
+    padding-left: 10px; 
+    margin-bottom: 10px;
+    background-color: #2a2a2a; 
+    padding: 10px;
+    border-radius: 0 4px 4px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .series-mini-logo {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    background: #111;
+    border-radius: 4px;
+    border: 1px solid #444;
+    flex-shrink: 0;
+  }
+
+  .event-info { flex-grow: 1; }
+  .event-time { font-size: 0.85em; font-weight: bold; color: var(--pra-red); display: block; }
+  .event-title { font-weight: bold; display: block; color: white; font-size: 0.95em; line-height: 1.2; }
+  .view-details-btn { margin-top: auto; font-size: 0.8em; padding: 8px; width: 100%; }
+  
+  /* --- TABLES --- */
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95em; text-align: left; border: 1px solid var(--pra-border); }
+  th { background-color: var(--pra-red); color: white; padding: 10px; border-bottom: 1px solid var(--pra-border); }
+  td { border-bottom: 1px solid var(--pra-border); padding: 10px; color: var(--text-main); }
+  tr:nth-child(even) { background-color: #1a1a1a; }
+
+  /* Footer */
+  .footer { text-align: center; font-size: 0.9em; color: var(--text-muted); margin-top: 60px; border-top: 1px solid var(--pra-border); padding-top: 20px; }
+
+  /* --- HANDBOOK SPECIFIC --- */
+  .handbook-header { background: #222; padding: 10px; font-weight: bold; margin-top: 20px; border-bottom: 2px solid var(--pra-red); color: var(--pra-red); text-transform: uppercase; }
+  .article-title { font-weight: bold; margin-top: 15px; display: block; color: white; }
+  .sec-list { list-style: none; padding-left: 20px; margin-top: 5px; }
+  .sec-item { margin-bottom: 8px; padding-left: 10px; border-left: 2px solid #444; }
+  .sec-label { font-weight: bold; color: #ccc; margin-right: 5px; }
+  .sub-sec-list { list-style: none; padding-left: 20px; margin-top: 5px; }
+  .sub-sec-item { margin-bottom: 5px; font-size: 0.95em; color: #aaa; }
+  .sub-sec-label { font-weight: bold; color: #888; margin-right: 5px; }
+
+</style>
+<script>
+  // Dynamically adjust body padding to match header height
+  function adjustBodyPadding() {
+    const header = document.querySelector('.app-header');
+    const body = document.body;
+    if (header) {
+      const headerHeight = header.offsetHeight;
+      body.style.paddingTop = headerHeight + 20 + 'px'; // Add 20px buffer
+    }
+  }
+
+  // Adjust on load and resize
+  window.addEventListener('load', adjustBodyPadding);
+  window.addEventListener('resize', adjustBodyPadding);
+
+  // Map view IDs to the index of the nav button that should be highlighted
+  // 0: Home, 1: Rulebook, 2: iRacing, 3: Wreckfest, 4: GT7
+  const navMap = {
+    'view-home': 0,
+    'view-rules': 1,
+    'view-iracing': 2,
+    'view-iracing-rules': 2,
+    
+    // Sunday
+    'view-sunday-hub': 2,
+    'view-hobby-stock': 2,
+    'view-rules-sunday': 2,
+    
+    // Monday
+    'view-series-monday': 2,
+    'view-gf-nostalgia': 2,
+    'view-rules-nostalgia': 2,
+    'view-asphalt-assault': 2,
+    'view-rules-asphalt': 2,
+    'view-crown-jewel': 2,
+    
+    // Tuesday
+    'view-tuesday-hub': 2,
+    'view-vision-corsa': 2,
+    
+    // Wednesday
+    'view-wednesday-hub': 2,
+    'view-gt7-wednesday-hub': 4,
+    'view-iscs': 4,
+
+    // Thursday
+    'view-thursday-hub': 2,
+    'view-sunset-bend': 2,
+    'view-rules-sunset': 2,
+
+    // Friday
+    'view-friday-hub': 2,
+
+    // Saturday
+    'view-saturday-hub': 2,
+    'view-sportscar-series': 2,
+    
+    // Other Leagues
+    'view-wreckfest': 3,
+    'view-wreckfest-psn': 3,
+    'view-wreckfest-pc': 3,
+    'view-wreckfest-psn-series': 3,
+    'view-wreckfest-psn-rules': 3,
+    'view-gt7': 4
+  };
+
+  function renderView(viewId) {
+    // Default to home if viewId is empty or doesn't exist
+    if (!viewId || !document.getElementById(viewId)) {
+      viewId = 'view-home';
+    }
+
+    // Switch View Class
+    const views = document.querySelectorAll('.view-section');
+    views.forEach(view => view.classList.remove('active'));
+    
+    const target = document.getElementById(viewId);
+    if (target) {
+      target.classList.add('active');
+    }
+    
+    // Update Nav Bar Highlight
+    const navs = document.querySelectorAll('.nav-btn');
+    navs.forEach(nav => nav.classList.remove('active'));
+    
+    const activeIndex = navMap[viewId];
+    if (activeIndex !== undefined && navs[activeIndex]) {
+      navs[activeIndex].classList.add('active');
+    } else {
+        // Fallback for IDs not in map (like view-home, defaults to 0)
+        if(viewId === 'view-home') navs[0].classList.add('active');
+    }
+    
+    // Scroll Top
+    document.body.scrollIntoView({ block: 'start' });
+  }
+
+  function navigateTo(viewId) {
+    // 1. Direct navigation (always works locally)
+    renderView(viewId);
+    
+    // 2. Try to update URL for history support (might fail in sandbox)
+    try {
+      const currentHash = window.location.hash.substring(1);
+      if (currentHash !== viewId) {
+         window.location.hash = viewId;
+      }
+    } catch (e) {
+      console.log("Navigation history restricted in this environment.");
+    }
+  }
+
+  // Handle Back/Forward via hash change
+  window.addEventListener('hashchange', () => {
+    try {
+      const hash = window.location.hash.substring(1); // Remove '#'
+      renderView(hash);
+    } catch (e) {
+      // Ignore errors accessing location
+    }
+  });
+
+  // Initial Load
+  document.addEventListener('DOMContentLoaded', () => {
+    let hash = '';
+    try {
+      hash = window.location.hash.substring(1);
+    } catch (e) {
+      // Ignore errors accessing location
+    }
+    renderView(hash);
+  });
+</script>
+</head>
+<body>
+
+  <!-- FIXED HEADER -->
+  <div class="app-header">
+    <h2 class="app-title">Prodigy Racing Association</h2>
+    <div class="nav-bar">
+      <button class="nav-btn active" onclick="navigateTo('view-home')"><img src="https://i.imgur.com/I0pgHNB.png" alt="">Home</button>
+      <button class="nav-btn" onclick="navigateTo('view-rules')"><img src="https://i.imgur.com/5l8RCMq.png" alt="">Rulebook</button>
+      <button class="nav-btn" onclick="navigateTo('view-iracing')"><img src="https://i.imgur.com/o9mQG4N.png" alt="">iRacing</button>
+      <button class="nav-btn" onclick="navigateTo('view-wreckfest')"><img src="https://i.imgur.com/CHIgZlg.png" alt="">Wreckfest</button>
+      <button class="nav-btn" onclick="navigateTo('view-gt7')"><img src="https://i.imgur.com/lIRl0er.png" alt="">Gran Turismo 7</button>
+      <button class="nav-btn" onclick="navigateTo('view-automobilista2')"><img src="https://i.imgur.com/eRer5k5.png" alt="">AMS2</button>
+    </div>
+  </div>
+
+  <div class="view-container">
+
+    <!-- =========================== -->
+    <!-- VIEW: HOME (LEAGUE HUB)     -->
+    <!-- =========================== -->
+    <div id="view-home" class="view-section active">
+      <h1>Select a League</h1>
+      <p style="text-align: center; margin-bottom: 20px;">Choose a league below to view schedules, rules, and series info.</p>
+      
+      <!-- RACING LEAGUES -->
+      <div class="grid-container">
+        <!-- iRacing Card -->
+        <div class="card">
+          <div>
+            <div class="logo-box">
+              <img src="https://i.imgur.com/o9mQG4N.png" class="logo-img">
+            </div>
+            <h3>iRacing</h3>
+            <p>Oval, Dirt Oval, and Road Racing competitive leagues.</p>
+          </div>
+          <button class="btn" onclick="navigateTo('view-iracing')">Enter Hub</button>
+        </div>
+
+        <!-- Wreckfest Card -->
+        <div class="card">
+          <div>
+            <div class="logo-box">
+              <img src="https://i.imgur.com/CHIgZlg.png" class="logo-img">
+            </div>
+            <h3>Wreckfest</h3>
+            <p>Semi-clean Wreckfest racing league.</p>
+          </div>
+          <button class="btn" onclick="navigateTo('view-wreckfest')">Enter Hub</button>
+        </div>
+
+        <!-- Gran Turismo 7 Card -->
+        <div class="card">
+          <div>
+            <div class="logo-box">
+              <img src="https://i.imgur.com/lIRl0er.png" class="logo-img">
+            </div>
+            <h3>Gran Turismo 7</h3>
+            <p>Competitive console racing on PlayStation.</p>
+          </div>
+          <button class="btn" onclick="navigateTo('view-gt7')">Enter Hub</button>
+        </div>
+
+        <!-- AMS2 Card -->
+        <div class="card">
+          <div>
+            <div class="logo-box">
+              <img src="https://i.imgur.com/eRer5k5.png" class="logo-img">
+            </div>
+            <h3>AMS2</h3>
+            <p>Competitive Automobilista 2 racing league.</p>
+          </div>
+          <button class="btn" onclick="navigateTo('view-automobilista2')">Enter Hub</button>
+        </div>
+      </div>
+
+      <!-- COMMUNITY SECTION -->
+      <h2 style="text-align:center; margin-top:30px;">Community & Registration</h2>
+      <p style="text-align:center;">Join our Discord for communications and Grid Finder for scheduling and attendance sign-ups.</p>
+
+      <div class="grid-container">
+        <!-- Discord Card -->
+        <div class="card">
+          <div>
+            <div class="logo-box">
+              <img src="https://i.imgur.com/9b9Ezsw.png" class="logo-img">
+            </div>
+            <h3>Discord</h3>
+            <p>We do all of our communications here.</p>
+          </div>
+          <button class="btn btn-discord" onclick="window.open('http://discord.gg/pra', '_blank')">Join Server</button>
+        </div>
+
+        <!-- Grid Finder Card -->
+        <div class="card">
+          <div>
+            <!-- Used dark background for GF logo visibility (manual override) -->
+            <div class="logo-box" style="background-color: #111;">
+              <img src="https://i.imgur.com/OLb4DWH.png" class="logo-img">
+            </div>
+            <h3>Grid Finder</h3>
+            <p>Mandatory for all iRacing Series sign-ups.</p>
+          </div>
+          <button class="btn btn-gf" onclick="window.open('http://gridfinder.com/c/ProdigyRacingAssociation', '_blank')">Register Now</button>
+        </div>
+      </div>
+
+      <!-- STATS SECTION -->
+      <h2 style="text-align:center; margin-top:30px;">League Statistics</h2>
+      <p style="text-align:center;">View the current standings and historical data.</p>
+      
+      <div class="grid-container">
+        <!-- Stats Card -->
+        <div class="card">
+          <div>
+            <div class="logo-box">
+               <img src="https://i.imgur.com/7PX6w9g.png" class="logo-img">
+            </div>
+            <h3>League Stats Spreadsheet</h3>
+            <p>Official standings and history for all PRA series.</p>
+          </div>
+          <button class="btn" onclick="window.open(`https://1drv.ms/x/c/05302a90f4233151/IQRhCVUlaq_6SrSWNOZj31P9AXxNQD-qsQm0jIPZ_WZqaqU?em=2&AllowTyping=True&ActiveCell='Roster'!A1&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0`, '_blank')">View Spreadsheet</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: iRACING SCHEDULE      -->
+    <!-- =========================== -->
+    <div id="view-iracing" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-home')">&lt;&lt; Back to Home</button>
+      <h1>iRacing Weekly Schedule</h1>
+      
+      <!-- iRacing Rulebook Button -->
+      <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+        <button class="btn" onclick="navigateTo('view-iracing-rules')">View Official iRacing Rulebook</button>
+        <button class="btn" onclick="window.open('https://simracerhub.com/league_series.php?league_id=5122', '_blank')"><img src="https://i.imgur.com/gIeUTuK.png" alt="" style="height: 20px; width: auto;">SimRacerHub</button>
+      </div>
+      
+      <!-- NEW 7-DAY GRID -->
+      <div class="schedule-grid">
+        
+        <!-- SUNDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Sunday</div>
+          <div class="day-content">
+            <div style="font-size:0.8em; font-weight:bold; color:#888; border-bottom:1px solid #333; margin-bottom:5px;">Season in Progress</div>
+            <div class="event-item">
+              <!-- PLACEHOLDER LOGO -->
+              <img src="https://i.imgur.com/k1atDg3.png" class="series-mini-logo">
+              <div class="event-info">
+                <span class="event-time">7:00 PM EST</span>
+                <span class="event-title">Hobby Stock Showdown</span>
+              </div>
+            </div>
+            <button class="btn view-details-btn" onclick="navigateTo('view-sunday-hub')">View All Details</button>
+          </div>
+        </div>
+
+        <!-- MONDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Monday</div>
+          <div class="day-content">
+            <div style="font-size:0.8em; font-weight:bold; color:#888; border-bottom:1px solid #333; margin-bottom:5px;">Season 2 Coming Soon</div>
+            <div class="event-item">
+              <img src="https://i.imgur.com/13WcnMo.png" class="series-mini-logo">
+              <div class="event-info">
+                <span class="event-time">8:00 PM EST</span>
+                <span class="event-title">Grid Finder Nostalgia</span>
+              </div>
+            </div>
+            
+            <div style="font-size:0.8em; font-weight:bold; color:#888; border-bottom:1px solid #333; margin:10px 0 5px 0;">Season in Progress</div>
+            <div class="event-item">
+              <img src="https://i.imgur.com/ToTts3F.png" class="series-mini-logo">
+              <div class="event-info">
+                <span class="event-time">8:00 PM EST</span>
+                <span class="event-title">Asphalt Assault</span>
+              </div>
+            </div>
+            <div class="event-item">
+              <img src="https://i.imgur.com/bHlEWj8.png" class="series-mini-logo">
+              <div class="event-info">
+                <span class="event-time">9:00 PM EST</span>
+                <span class="event-title">Crown Jewel Late Models</span>
+              </div>
+            </div>
+             <button class="btn view-details-btn" onclick="navigateTo('view-series-monday')">View All Details</button>
+          </div>
+        </div>
+
+        <!-- TUESDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Tuesday</div>
+          <div class="day-content">
+            <div style="font-size:0.8em; font-weight:bold; color:#888; border-bottom:1px solid #333; margin-bottom:5px;">Season 4 Coming Soon Feb 24th</div>
+            <div class="event-item">
+              <img src="https://i.imgur.com/0duu7gX.png" class="series-mini-logo">
+              <div class="event-info">
+                <span class="event-time">8:30 PM EST</span>
+                <span class="event-title">Vision Corsa IndyCar Series</span>
+              </div>
+            </div>
+            <button class="btn view-details-btn" onclick="navigateTo('view-tuesday-hub')">View All Details</button>
+          </div>
+        </div>
+
+        <!-- WEDNESDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Wednesday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic; margin-bottom: 20px;">No races scheduled</div>
+            <button class="btn view-details-btn" onclick="navigateTo('view-wednesday-hub')">View All Details</button>
+          </div>
+        </div>
+
+        <!-- THURSDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Thursday</div>
+          <div class="day-content">
+            <div style="font-size:0.8em; font-weight:bold; color:#888; border-bottom:1px solid #333; margin-bottom:5px;">Season 2 in Progress.</div>
+            <div class="event-item">
+              <img src="https://i.imgur.com/Vc3twir.png" class="series-mini-logo">
+              <div class="event-info">
+                <span class="event-time">8:00 PM EST</span>
+                <span class="event-title">Sunset Bend Street Stock Challenge</span>
+              </div>
+            </div>
+             <button class="btn view-details-btn" onclick="navigateTo('view-thursday-hub')">View All Details</button>
+          </div>
+        </div>
+
+        <!-- FRIDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Friday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic; margin-bottom: 20px;">No races scheduled</div>
+             <button class="btn view-details-btn" onclick="navigateTo('view-friday-hub')">View All Details</button>
+          </div>
+        </div>
+
+        <!-- SATURDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Saturday</div>
+          <div class="day-content">
+            <div style="font-size:0.8em; font-weight:bold; color:#888; border-bottom:1px solid #333; margin-bottom:5px;">Season 3 starts Feb 28th</div>
+            <div class="event-item">
+              <img src="https://i.imgur.com/calRaPD.png" class="series-mini-logo">
+              <div class="event-info">
+                <span class="event-time">9:00 PM EST</span>
+                <span class="event-title">Saturday Night SportsCar Series</span>
+              </div>
+            </div>
+            <button class="btn view-details-btn" onclick="navigateTo('view-saturday-hub')">View All Details</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: iRACING RULEBOOK      -->
+    <!-- =========================== -->
+    <div id="view-iracing-rules" class="view-section text-left">
+      <button class="btn btn-back" onclick="navigateTo('view-iracing')">&lt;&lt; Back to iRacing Hub</button>
+      <h1 style="text-align:center;">PRA iRacing Rulebook</h1>
+
+      <div class="note-box">
+        <strong>Note:</strong> Caution rulings listed below will be overruled by intentional contact rules if the incident is deemed intentional. Any incidents that are deemed a "netcode" incident will not be given any of the penalties listed below.
+      </div>
+
+      <h2>Caution Rules</h2>
+      <p>If race control needs extra time to determine the incident, more caution laps will be added.</p>
+
+      <div class="penalty-box">
+        <h3>Rookie Series Incident Rules</h3>
+        <ul class="sec-list">
+          <li><strong>1st incident causing a caution:</strong> No action taken</li>
+          <li><strong>2nd incident:</strong> EOL (End of Line) penalty</li>
+          <li><strong>3rd incident:</strong> 1 lap penalty</li>
+          <li><strong>4th incident:</strong> DQ (Disqualification)</li>
+        </ul>
+      </div>
+
+      <div class="penalty-box">
+        <h3>Pro Series Incident Rules</h3>
+        <ul class="sec-list">
+          <li><strong>1st incident:</strong> EOL penalty</li>
+          <li><strong>2nd incident:</strong> EOL penalty</li>
+          <li><strong>3rd incident:</strong> 1 lap penalty</li>
+          <li><strong>4th incident:</strong> DQ</li>
+        </ul>
+      </div>
+
+      <h2>Unintentional Contact</h2>
+      <p>Will be reviewed as requested through the submitted incident form. The form will be in the Discord with all the steps of how to submit as well as deadlines. Any infractions deemed unintentional will be reviewed by the race officials and Board of Directors.</p>
+      <p><strong>Unintentional contact could include:</strong></p>
+      <ul class="sec-list">
+        <li>Bump and Runs</li>
+        <li>Corner diving of 2 car lengths or more</li>
+        <li>Not backing out of locked corner panels (bumper locks)</li>
+      </ul>
+
+      <h2>Intentional Contact</h2>
+      <p>The Board of Directors will make the decision of penalty severity. Intentional contact includes:</p>
+      <ul class="sec-list">
+        <li>Avoidable pit maneuvers (intentionally turning into another vehicle’s corner panel)</li>
+        <li>Avoidable dive bombs (0 braking into a corner, targeting another driver)</li>
+        <li>Driving through competitors on starts/restarts</li>
+        <li>Pushing people off the track (with ill intent)</li>
+      </ul>
+      <div class="penalty-box">
+        <strong>Penalty:</strong> 1 full week suspension of the main series. If the infraction occurs on championship week, the suspension carries over to the following season.
+      </div>
+
+      <h2>Race Manipulation</h2>
+      <h3>Bump Starts</h3>
+      <p>A bump start is when two or more drivers time the green of the race intentionally to gain an advantage over other competitors. If officials call a bump start after review, drivers will be given a <strong>DQ for that race</strong>. Repeat infractions will receive additional penalties up to a league ban.</p>
+
+      <h3>Team Tactics</h3>
+      <p>Team tactics include but are not limited to:</p>
+      <ul class="sec-list">
+        <li>Blocking for a fellow racer</li>
+        <li>Causing a caution to better yourself or a teammate's position</li>
+        <li>Forcing people into a worse line to better a teammate's position</li>
+      </ul>
+
+      <h2>Enforcing Infractions</h2>
+      <p>For infractions to be enforced, you must send in an incident form found in the Discord. <strong>THESE MUST BE FILLED IN BY THE DAY AFTER THE RACE.</strong> At midnight on the day after the races, no incident form will be considered. If the form is not working, reach out to a member of the BOARD OF DIRECTORS.</p>
+
+      <h2>Series Specific Rules</h2>
+      <p>Each series may have additional rules in a separate rulebook (e.g., start types, fast repairs, specific Blue Flag rules).</p>
+
+      <h2>Extra Rules</h2>
+      <h3>Blue Flag Rules</h3>
+      <p>Refer to your series-specific rulebook for in-depth rules. Generally, Blue Flags are a warning that faster drivers are approaching. Be predictable. Faster drivers must be patient and pass cleanly; slower drivers are allowed on the track.</p>
+
+      <h3>Legal Racing Surface</h3>
+      <p>At least two wheels must always be on the racing surface. Cutting the track results in grid penalties for the first offense and a stop & go penalty for the second offense.</p>
+
+      <h3>Voice Communication</h3>
+      <ul class="sec-list">
+        <li>Do not abuse other drivers. You will be muted after one offense.</li>
+        <li>Repeat abuse offenses result in a ban.</li>
+        <li>Being disruptive will get you warned up to 2 times, then server muted.</li>
+        <li>Repeat offenders will be banned indefinitely or permanently.</li>
+      </ul>
+
+      <h3>Discord Usage During Races</h3>
+      <p>It is not mandatory to be in Discord during races, but there must be a way for officials to communicate with you (even if text). Refrain from excessively joining/leaving channels.</p>
+
+      <h2>Paint Scheme Rules</h2>
+      <p>Paint schemes must be professional. Meme schemes are not allowed. Series-specific contingency logos are required. Ensure your paint number matches your sign-up number.</p>
+
+      <h2>Age & Conduct</h2>
+      <h3>16+ Requirement</h3>
+      <p>You must be 16 or older to participate. Immaturity in sign-up, Discord, or on-track can result in removal.</p>
+
+      <h3>PRA iRacing Officials</h3>
+      <ul class="sec-list">
+        <li>Must be 18 or older.</li>
+        <li>Must be vetted by a Board Member (sitting in at least 1 season).</li>
+        <li>Each series needs at least 3 officials to operate.</li>
+        <li>Officials displaying anger or toxicity will be removed immediately.</li>
+      </ul>
+
+      <h2>Simplified Code of Conduct</h2>
+      <div class="note-box">
+        <ul class="sec-list">
+          <li>No political talk</li>
+          <li>No religious talk</li>
+          <li>Do not make racial remarks</li>
+          <li>Do not make bigoted remarks</li>
+          <li>Do not bully other members</li>
+          <li>Absolutely no toxicity</li>
+          <li>Do not spam the Discord chat</li>
+        </ul>
+        <p><em>This includes your PROFILE BIO in Discord. Failure to adhere can lead to suspensions/bans.</em></p>
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: SUNDAY SERIES HUB     -->
+    <!-- =========================== -->
+    <div id="view-sunday-hub" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-iracing')">&lt;&lt; Back to Schedule</button>
+      <h1>Sunday Night Racing</h1>
+      
+      <div class="grid-container" style="justify-content: flex-start; text-align: left;">
+        
+        <!-- Hobby Stock Card -->
+        <div class="card" style="width: 100%;">
+          <div class="logo-box">
+            <img src="https://i.imgur.com/k1atDg3.png" class="logo-img">
+          </div>
+          <h3>Hobby Stock Showdown</h3>
+          <p>Season 1 Active</p>
+          <button class="btn" style="width: auto;" onclick="navigateTo('view-hobby-stock')">View Details</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: SUNDAY SERIES DETAIL  -->
+    <!-- =========================== -->
+    <div id="view-hobby-stock" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-sunday-hub')">&lt;&lt; Back to Sunday Hub</button>
+      <h1>Hobby Stock Season 1</h1>
+      
+      <div class="series-nav-bar">
+        <button class="series-nav-btn btn-gf" onclick="window.open('https://www.gridfinder.com/c/ProdigyRacingAssociation/bfd45c51-ac41-4a70-b1d8-0df8c8207064', '_blank')">
+          <img src="https://i.imgur.com/OLb4DWH.png" alt="" style="height: 20px; width: auto;">Sign Up on Grid Finder
+        </button>
+        <button class="series-nav-btn" onclick="navigateTo('view-rules-sunday')">View Series Rulebook</button>
+        <button class="series-nav-btn" onclick="window.open('https://simracerhub.com/series_seasons.php?series_id=12639', '_blank')"><img src="https://i.imgur.com/gIeUTuK.png" alt="" style="height: 20px; width: auto;">SimRacerHub Stats</button>
+      </div>
+      
+      <div style="text-align:center;">
+        <img src="https://i.imgur.com/sp8PIt9.png" style="max-width:100%; border-radius:8px; margin-bottom:20px;">
+      </div>
+
+      <h2>Series Info</h2>
+      <ul>
+        <li><strong>League ID:</strong> #11855</li>
+        <li><strong>Car:</strong> Asphalt Street Stock (on Dirt)</li>
+        <li><strong>Setup:</strong> Fixed</li>
+      </ul>
+
+      <h2>Season Schedule</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Track</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>January 11th</td><td>Charlotte</td></tr>
+          <tr><td>January 18th</td><td>LimaLand</td></tr>
+          <tr><td>January 25th</td><td>Eldora</td></tr>
+          <tr><td>February 1st</td><td>Bristol</td></tr>
+          <tr><td>February 8th</td><td>Knoxville</td></tr>
+          <tr><td>February 15th</td><td>I-55</td></tr>
+          <tr><td>February 22nd</td><td>Cedar Lake</td></tr>
+          <tr><td>March 1st</td><td>Port Royal</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: SUNDAY SERIES RULEBOOK -->
+    <!-- =========================== -->
+    <div id="view-rules-sunday" class="view-section text-left">
+      <button class="btn btn-back" onclick="navigateTo('view-hobby-stock')">&lt;&lt; Back to Sunday Showdown</button>
+      <h1 style="text-align:center;">PRA Sunday Showdown Series Info/Rules</h1>
+
+      <div class="note-box">
+        <h3>Series Information</h3>
+        <ul class="sec-list">
+          <li><strong>League ID:</strong> #11855 – You will not be accepted unless entry fee is paid</li>
+          <li><strong>Weather:</strong> Realistic - Practice will be set for 7 pm est in game, Qualifying 8 pm est, Heat Races 8:30 pm, Feature 9 pm</li>
+          <li><strong>Schedule of events:</strong>
+            <ul class="sub-sec-list">
+              <li>Lobby opens at 7:00 pm EST.</li>
+              <li>Practice: 7:00 pm to 7:15 pm</li>
+              <li>Qualify: 7:15 pm to 7:25 pm</li>
+              <li>Heat Races: 7:25 pm</li>
+              <li>Feature: to follow</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <h3>Points</h3>
+        <ul class="sec-list">
+          <li><strong>Qualifying:</strong> Top 5 earn points starting at 5 and going down to 1</li>
+          <li><strong>Heat Races:</strong> Top 10 earn points starting at 10 going down to 1</li>
+          <li><strong>Consolation:</strong> No points</li>
+          <li><strong>Feature:</strong> 30 cars make the field, Earning points from 30 down to 1</li>
+          <li><strong>Bonus points:</strong> laps led, most laps led</li>
+        </ul>
+      </div>
+
+      <h2>Series Specific Rules</h2>
+      <p><strong>Note:</strong> All Standard PRA iRacing Rules still apply.</p>
+
+      <h3>Starts</h3>
+      <ul class="sec-list">
+        <li>All starts are on the leader- start zone is anywhere from the entry of turn 4 to the auto green flag.</li>
+        <li><strong>Jump Starts:</strong> will result in a 1 row penalty no warnings given</li>
+        <li>Must be "bunched up" (no more than 1 car length between cars) before midpoint of back straight</li>
+        <li>Leader Must maintain pace speed +/- 5 mph (ex: 35 mph pace speed 30 to 40 mph is legal) field should match leader pace.</li>
+        <li>No rapid acceleration/deceleration. Must maintain constant speed off of turn 2 with 1 to go</li>
+      </ul>
+      <div class="penalty-box">
+        <strong>Penalties:</strong> Will count as "Jump Start" 1 row penalty no warning. Penalty will be assessed at the next yellow or end of race.
+      </div>
+
+      <h3>Track Hazards</h3>
+      <ul class="sec-list">
+        <li>If the official deems you a track hazard you will be asked to park it for the race</li>
+        <li>Hazards can be anything from network issues (excessive blinking), to car control issues.</li>
+      </ul>
+
+      <h3>Black Flags</h3>
+      <ul class="sec-list">
+        <li>Black flags given by iRacing will be cleared at Officials Discretion.</li>
+        <li>We understand that sometimes iRacing drops one on you for something stupid, however if you make a mistake (passing before the start/finish, speeding in pits, ect.) we will not clear those</li>
+      </ul>
+
+      <h3>Practice Rules</h3>
+      <div class="penalty-box">
+        Practice is not a demolition derby. If you treat it as such you will be removed before the race begins.
+      </div>
+
+      <h3>Incidents</h3>
+      <ul class="sec-list">
+        <li>Official assigns "fault" for the incident</li>
+        <li>Driver at fault will receive an EOL</li>
+        <li>3 EOL penalties result in auto DQ</li>
+        <li>Intentional wrecking, deemed by official, will result in auto DQ</li>
+      </ul>
+
+      <h3>Officials</h3>
+      <ul class="sec-list">
+        <li>Official’s rulings are ultimate and final during the race. Do not argue the calls during the race.</li>
+        <li><strong>Incident report form:</strong> If you have an incident you feel the official missed, or a call that the official got wrong please fill out the incident report form linked in the Gladiator info channel and it will be reviewed by a neutral party of iRacing Officials and Board of Directors members.</li>
+      </ul>
+      <p><em>*All rules are subject to change! Rule updates will be communicated to drivers via Sunday Showdown series Discord chat channels*</em></p>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: MONDAY SERIES HUB     -->
+    <!-- =========================== -->
+    <div id="view-series-monday" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-iracing')">&lt;&lt; Back to Schedule</button>
+      <h1>Monday Night Racing</h1>
+      
+      <div class="grid-container" style="justify-content: flex-start; text-align: left;">
+        
+        <!-- GF Nostalgia Card -->
+        <div class="card" style="width: 100%;">
+          <div class="logo-box">
+            <img src="https://i.imgur.com/13WcnMo.png" class="logo-img">
+          </div>
+          <h3>Grid Finder Nostalgia Series</h3>
+          <p>Gen 4 Cup Cars on NASCAR Style Tracks. (Now - Feb)</p>
+          <button class="btn" style="width: auto;" onclick="navigateTo('view-gf-nostalgia')">View Details</button>
+        </div>
+
+        <!-- Asphalt Assault Card -->
+        <div class="card" style="width: 100%;">
+          <div class="logo-box">
+            <img src="https://i.imgur.com/ToTts3F.png" class="logo-img">
+          </div>
+          <h3>Asphalt Assault Series</h3>
+          <p>Season 4 Starting Feb 2026</p>
+          <button class="btn" style="width: auto;" onclick="navigateTo('view-asphalt-assault')">View Details</button>
+        </div>
+
+        <div class="card" style="width: 100%;">
+          <div class="logo-box">
+            <img src="https://i.imgur.com/bHlEWj8.png" class="logo-img">
+          </div>
+          <h3>Crown Jewel Late Models</h3>
+          <p>Coming February @ 9pm EST</p>
+          <button class="btn" style="width: auto;" onclick="navigateTo('view-crown-jewel')">View Details</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: TUESDAY SERIES HUB    -->
+    <!-- =========================== -->
+    <div id="view-tuesday-hub" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-iracing')">&lt;&lt; Back to Schedule</button>
+      <h1>Tuesday Night Racing</h1>
+      
+      <div class="grid-container" style="justify-content: flex-start; text-align: left;">
+        
+        <!-- Vision Corsa Card -->
+        <div class="card" style="width: 100%;">
+          <div class="logo-box">
+            <img src="https://i.imgur.com/0duu7gX.png" class="logo-img">
+          </div>
+          <h3>Vision Corsa IndyCar Series</h3>
+          <p>Season 4 Starting Feb 2026</p>
+          <button class="btn" style="width: auto;" onclick="navigateTo('view-vision-corsa')">View Details</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: WEDNESDAY SERIES HUB  -->
+    <!-- =========================== -->
+    <div id="view-wednesday-hub" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-iracing')">&lt;&lt; Back to Schedule</button>
+      <h1>Wednesday Night Racing</h1>
+      <div class="grid-container" style="justify-content: flex-start; text-align: left;">
+        <div class="card" style="width: 100%;">
+          <div class="logo-box">
+            <img src="https://i.imgur.com/o9mQG4N.png" class="logo-img">
+          </div>
+          <h3>No iRacing Series currently running on Wednesdays.</h3>
+          <p>Check the Discord for any league or series announcements.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: GT7 WEDNESDAY HUB     -->
+    <!-- =========================== -->
+    <div id="view-gt7-wednesday-hub" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-gt7')">&lt;&lt; Back to Schedule</button>
+      <h1>Wednesday Night Racing</h1>
+      
+      <div class="grid-container" style="justify-content: flex-start; text-align: left;">
+        
+        <!-- ISCS Card -->
+        <div class="card" style="width: 100%;">
+          <div class="logo-box">
+            <img src="https://i.imgur.com/E1VgpRn.png" class="logo-img">
+          </div>
+          <h3>International Sports Car Series</h3>
+          <p>Gran Turismo 7 Sports Car Racing on Wednesdays @ 8pm EST</p>
+          <button class="btn" style="width: auto;" onclick="navigateTo('view-iscs')">View Details</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: ISCS DETAIL           -->
+    <!-- =========================== -->
+    <div id="view-iscs" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-gt7-wednesday-hub')">&lt;&lt; Back to Wednesday Hub</button>
+      
+      <h1 style="border: none;">International Sports Car Series</h1>
+      
+      <div class="series-nav-bar">
+        <button class="series-nav-btn btn-gf" onclick="window.open('https://www.gridfinder.com/c/ProdigyRacingAssociation/pra-gt7-iscs-season-5', '_blank')">
+          <img src="https://i.imgur.com/OLb4DWH.png" alt="" style="height: 20px; width: auto;">Sign Up on Grid Finder
+        </button>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://i.imgur.com/E1VgpRn.png" style="max-width: 100%; border: 1px solid #444; border-radius: 8px;">
+      </div>
+      
+      <div class="note-box" style="text-align: center;">
+        <strong>Gran Turismo 7 Sports Cars</strong> | <strong>Wednesdays</strong>
+      </div>
+
+      <ul>
+        <li><strong>8:00 PM EST:</strong> Qualifying for 10 minutes</li>
+        <li><strong>Race 1:</strong> Sprint Race for 15 minutes</li>
+        <li><strong>Race 2:</strong> 40 minutes</li>
+      </ul>
+
+      <!-- Schedule Image -->
+      <div style="text-align: center; margin: 30px 0;">
+        <img src="https://i.imgur.com/5KwIpLo.png" style="max-width: 100%; border: 1px solid #444; border-radius: 8px;">
+      </div>
+
+      <h2>Season Schedule</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Race</th>
+            <th>Track</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Race 1</td><td>Circuit Gilles Villeneuve</td></tr>
+          <tr><td>Race 2</td><td>Daytona Road Course</td></tr>
+          <tr><td>Race 3</td><td>Interlagos</td></tr>
+          <tr><td>Race 4</td><td>Yas Marina</td></tr>
+          <tr><td>Race 5</td><td>Spa 24H</td></tr>
+          <tr><td>Race 6</td><td>Red Bull Ring</td></tr>
+          <tr><td>Race 7</td><td>Autopolis</td></tr>
+          <tr><td>Race 8</td><td>Mount Panorama</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: THURSDAY SERIES HUB   -->
+    <!-- =========================== -->
+    <div id="view-thursday-hub" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-iracing')">&lt;&lt; Back to Schedule</button>
+      <h1>Thursday Night Racing</h1>
+      <div class="grid-container" style="justify-content: flex-start; text-align: left;">
+        
+        <!-- Sunset Bend Card -->
+        <div class="card" style="width: 100%;">
+          <div class="logo-box">
+            <img src="https://i.imgur.com/Vc3twir.png" class="logo-img">
+          </div>
+          <h3>Sunset Bend Street Stock Challenge</h3>
+          <p>Road Course Action on Thursdays</p>
+          <button class="btn" style="width: auto;" onclick="navigateTo('view-sunset-bend')">View Details</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: SUNSET BEND DETAIL    -->
+    <!-- =========================== -->
+    <div id="view-sunset-bend" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-thursday-hub')">&lt;&lt; Back to Thursday Hub</button>
+      
+      <h1>Sunset Bend Street Stock Challenge</h1>
+      
+      <div class="series-nav-bar">
+        <button class="series-nav-btn btn-gf" onclick="window.open('https://www.gridfinder.com/c/ProdigyRacingAssociation/sunset-bend-street-stock-road-course-challenge-s2?tabName=Event-Schedule', '_blank')">
+          <img src="https://i.imgur.com/OLb4DWH.png" alt="" style="height: 20px; width: auto;">Sign Up on Grid Finder
+        </button>
+        <button class="series-nav-btn" onclick="navigateTo('view-rules-sunset')">View Series Rulebook</button>
+        <button class="series-nav-btn" onclick="window.open('https://simracerhub.com/series_seasons.php?series_id=13402', '_blank')"><img src="https://i.imgur.com/gIeUTuK.png" alt="" style="height: 20px; width: auto;">SimRacerHub Stats</button>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://www.gridfinder.com/_next/image?url=https%3A%2F%2Fgridfinder-wordpress.s3.us-east-2.amazonaws.com%2Fchamp_header_yw3giagqe7i_fileName.jpg%3Fts%3D1764990434984&w=2048&q=75" style="max-width: 100%; border: 1px solid #444; border-radius: 8px;">
+      </div>
+      
+      <div class="note-box" style="text-align: center;">
+        <strong>Car:</strong> Street Stock<br>
+        <strong>Setup:</strong> Fixed
+      </div>
+
+      <h2>Race Night Schedule</h2>
+      <ul>
+        <li><strong>8:00 PM EST:</strong> Practice</li>
+        <li><strong>9:00 PM EST:</strong> Qualifying</li>
+      </ul>
+
+      <h2>Season Schedule</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Race</th>
+            <th>Date</th>
+            <th>Track</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Race 1</td><td>Jan 15th, 2026</td><td>Daytona Road Course</td></tr>
+          <tr><td>Race 2</td><td>Jan 22nd, 2026</td><td>Charlotte Roval</td></tr>
+          <tr><td>Race 3</td><td>Jan 29th, 2026</td><td>Oulton Park</td></tr>
+          <tr><td>Race 4</td><td>Feb 5th, 2026</td><td>Oran Park</td></tr>
+          <tr><td>Race 5</td><td>Feb 12th, 2026</td><td>Navarra Medium</td></tr>
+          <tr><td>Race 6</td><td>Feb 19th, 2026</td><td>Okayama Full</td></tr>
+          <tr><td>Race 7</td><td>Feb 26th, 2026</td><td>Road America</td></tr>
+          <tr><td>Race 8</td><td>Mar 5th, 2026</td><td>Watkins Glen</td></tr>
+          <tr><td>Race 9</td><td>Mar 12th, 2026</td><td>Sebring</td></tr>
+          <tr><td>Race 10</td><td>Mar 19th, 2026</td><td>VIR</td></tr>
+          <tr><td>Race 11</td><td>Mar 26th, 2026</td><td>Rudskogen</td></tr>
+          <tr><td>Race 12</td><td>Apr 2nd, 2026</td><td>Adelaide Street Circuit</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: SUNSET BEND RULEBOOK -->
+    <!-- =========================== -->
+    <div id="view-rules-sunset" class="view-section text-left">
+      <button class="btn btn-back" onclick="navigateTo('view-sunset-bend')">&lt;&lt; Back to Sunset Bend</button>
+      <h1 style="text-align:center;">Sunset Bend Street Stock Road Course Challenge</h1>
+      <h3 style="text-align:center; color: #aaa;">Season 2 Rulebook Briefing</h3>
+
+      <div class="note-box">
+        <h3>1. Introduction</h3>
+        <p><strong>1.1 About the Championship</strong></p>
+        <p>Operated by the Prodigy Racing Association (PRA), the Sunset Bend Street Stock Road Course Challenge is a road racing championship designed for competitive, fair, and accessible sim racing across all skill levels, emphasizing a low-drama environment and a supportive culture. This multi-round series utilizes the iRacing Street Stock car on a diverse calendar of North American and international road circuits.</p>
+        
+        <p><strong>1.2 Objectives</strong></p>
+        <ul class="sec-list">
+          <li>Deliver clean, hard, competitive racing.</li>
+          <li>Maintain a friendly, supportive, low-drama community.</li>
+          <li>Provide a structured championship with playoffs and team competition.</li>
+          <li>Offer free entry and free broadcast coverage courtesy of PRA.</li>
+        </ul>
+
+        <p><strong>1.3 Governance</strong></p>
+        <p>The championship is organized and moderated by the PRA administration team. The PRA Competition Code applies at all times.</p>
+      </div>
+
+      <div class="note-box">
+        <h3>2. Season Format</h3>
+        <p><strong>2.1 Weekly Schedule</strong> (Every Thursday)</p>
+        <ul class="sec-list">
+          <li><strong>Practice:</strong> 8:00 PM EST (1 hour)</li>
+          <li><strong>Qualifying:</strong> 9:00 PM EST (10 Min Open session)</li>
+          <li><strong>Race 1:</strong> 20-minute points-paying race</li>
+          <li><strong>Race 2:</strong> 20-minute points-paying race with a full-field inversion based on Race 1 results</li>
+        </ul>
+
+        <p><strong>2.2 Sessions</strong></p>
+        <ul class="sec-list">
+            <li>All sessions are held in PRA “Sunset Bend” league. [ID # 13295]</li>
+            <li>Weather and track conditions follow iRacing’s dynamic settings unless otherwise announced. [This vehicle does not have rain tires]</li>
+        </ul>
+
+        <p><strong>2.3 Communications</strong></p>
+        <p>Communications will be made mainly in PRA Discord followed by race day reminders via iRacing’s UI league announcements page.</p>
+      </div>
+
+      <div class="note-box">
+        <h3>3. Season Structure</h3>
+        <p><strong>3.1 Regular Season (Rounds 1–8)</strong></p>
+        <ul class="sec-list">
+          <li>1. Daytona Road Course - January 15th</li>
+          <li>2. Charlotte Roval - January 22nd</li>
+          <li>3. Oulton Park - January 29th</li>
+          <li>4. Oran Park - February 5th</li>
+          <li>5. Navarra Medium - February 12th</li>
+          <li>6. Okayama Full - February 19th</li>
+          <li>7. Road America - February 26th</li>
+          <li>8. Watkins Glen - March 5th</li>
+        </ul>
+        <p><strong>3.2 Chase Playoffs (Rounds 9–12)</strong></p>
+        <p>The final four races form the Chase Championship:</p>
+        <ul class="sec-list">
+          <li>9. Sebring International Raceway - March 12th</li>
+          <li>10. VIR Full Course - March 19th</li>
+          <li>11. Rudskogen Motorsenter - March 26th</li>
+          <li>12. Adelaide Street Circuit (Finale) - April 2nd</li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <h3>4. Points System</h3>
+        <p><strong>4.1 Regular Season Points</strong></p>
+        <p>The current points system applies for all races, including bonus points defined within that system:</p>
+        <ul class="sec-list">
+          <li>45pts to the Winner, 39 to second, 38 to third and -1 from there down to 40.</li>
+          <li>3 Bonus Points for Pole Position.</li>
+        </ul>
+        
+        <p><strong>4.2 Chase Qualification</strong></p>
+        <ul class="sec-list">
+          <li>After Round 8, the top 10 drivers in the standings will qualify for the “Chase”.</li>
+          <li>Chase drivers have their points reset to 1000.</li>
+        </ul>
+
+        <p><strong>4.3 Post-Season Bonus Points</strong></p>
+        <p>After the regular season concludes (but before the Chase begins):</p>
+        <ul class="sec-list">
+          <li>+5 points per regular season win</li>
+          <li>+1 point per regular season pole position</li>
+        </ul>
+        <p>These are added to each Chase driver’s reset total.</p>
+
+        <p><strong>4.4 “Chase” Champion</strong></p>
+        <ul class="sec-list">
+          <li>Points accrued in Rounds 9–12 determine the overall champion.</li>
+          <li>The driver with the highest total after Adelaide is the Season 2 Champion.</li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <h3>5. Teams Championship</h3>
+        <p><strong>5.1 Team Composition</strong></p>
+        <ul class="sec-list">
+          <li>Teams may be formed at any time, but points only start counting once registered.</li>
+          <li>Maximum 4 drivers per team.</li>
+          <li>Only points awarded race by race count towards the team championship, no chase reset values or bonus points are considered.</li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <h3>6. Sporting Regulations</h3>
+        <p><strong>6.1 Starts & Restarts [If Necessary]</strong></p>
+        <ul class="sec-list">
+          <li>All starts are “Go on Green.”</li>
+          <li>Restarts can occur in the event of catastrophic network / server error.</li>
+          <li>iRacing controls restarts unless otherwise announced.</li>
+        </ul>
+
+        <p><strong>6.2 Track Limits</strong></p>
+        <ul class="sec-list">
+            <li>Governed by iRacing’s automated system.</li>
+            <li>Drivers are expected not to exploit leniency or intentionally benefit from off-tracks or slowdowns. Penalties will be considered for repeat violations.</li>
+        </ul>
+
+        <p><strong>6.3 Incident Limits</strong></p>
+        <ul class="sec-list">
+            <li>No incident limit for Season 2.</li>
+            <li>Excessive or reckless contact may be penalized post-race.</li>
+        </ul>
+
+        <p><strong>6.4 Overtaking Guidelines</strong></p>
+        <p>Standard “Nascar”- Styled racing etiquette applies.</p>
+
+        <p><strong>6.5 Blue Flags</strong></p>
+        <p>Drivers being lapped must maintain predictable racing lines and allow faster traffic to pass safely.</p>
+
+        <p><strong>6.6 Disconnects & Technical Issues</strong></p>
+        <ul class="sec-list">
+            <li>Events continue unless the lobby itself fails.</li>
+            <li>No restarts for individual disconnects or incidents.</li>
+        </ul>
+      </div>
+
+      <div class="penalty-box">
+        <h3>7. Conduct & Stewarding</h3>
+        <p><strong>7.1 Behavior Expectations</strong></p>
+        <p>All drivers must follow the PRA Code of Conduct at all times, including:</p>
+        <ul class="sec-list">
+            <li>Respectful communication</li>
+            <li>Zero tolerance for harassment or abuse</li>
+            <li>No public arguments during or after races</li>
+        </ul>
+
+        <p><strong>7.2 Protest System</strong></p>
+        <ul class="sec-list">
+            <li>Protests must be submitted via the PRA Discord.</li>
+            <li>Stewards may review incidents proactively if necessary.</li>
+        </ul>
+
+        <p><strong>7.3 Penalties</strong></p>
+        <p>Possible penalties include:</p>
+        <ul class="sec-list">
+            <li>Time penalties</li>
+            <li>Points deductions</li>
+            <li>Race bans</li>
+            <li>Removal from the championship (for serious or repeated offences)</li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <h3>8. Media, Broadcasting & Promotion</h3>
+        <p><strong>8.1 Broadcast Coverage</strong></p>
+        <p>PRA & Grid Finder provide:</p>
+        <ul class="sec-list">
+            <li>Live race broadcasts [PRA]</li>
+            <li>Highlights packages [PRA & Grid Finder]</li>
+            <li>Media reels and recap posts [Grid Finder]</li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <h3>9. Entry Requirements</h3>
+        <p><strong>9.1 Eligibility</strong></p>
+        <ul class="sec-list">
+            <li>Active iRacing subscription</li>
+            <li>Street Stock car [Free]</li>
+            <li>All required tracks (7 Free, 5 paid)</li>
+            <li>Join the PRA Discord and Register to the championship on GridFinder.com, mark your attendance.</li>
+            <li>Acceptance & acknowledgement of all rules and codes of conduct</li>
+        </ul>
+
+        <p><strong>9.2 Registration</strong></p>
+        <p>Registration is handled via Grid Finder website or PRA Discord. Drivers must register before competing in points-paying races.</p>
+      </div>
+
+      <div class="note-box">
+        <h3>10. Summary</h3>
+        <p>Season 2 offers an accessible yet competitive racing environment with a playoff format, a full-season teams championship, free broadcasting, and a community-first atmosphere. The Sunset Bend & PRA team aim to deliver racing that is intense, rewarding, and enjoyable for every participant.</p>
+      </div>
+
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: FRIDAY SERIES HUB     -->
+    <!-- =========================== -->
+    <div id="view-friday-hub" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-iracing')">&lt;&lt; Back to Schedule</button>
+      <h1>Friday Night Racing</h1>
+      <div class="grid-container" style="justify-content: flex-start; text-align: left;">
+        <div class="card" style="width: 100%;">
+          <div class="logo-box">
+            <img src="https://i.imgur.com/o9mQG4N.png" class="logo-img">
+          </div>
+          <h3>Series Coming Soon</h3>
+          <p>Check back later for announcements.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: SATURDAY SERIES HUB   -->
+    <!-- =========================== -->
+    <div id="view-saturday-hub" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-iracing')">&lt;&lt; Back to Schedule</button>
+      <h1>Saturday Night Racing</h1>
+      <div class="grid-container" style="justify-content: flex-start; text-align: left;">
+        <!-- SportsCar Series Card -->
+        <div class="card" style="width: 100%;">
+          <div class="logo-box">
+            <img src="https://i.imgur.com/calRaPD.png" class="logo-img">
+          </div>
+          <h3>Saturday Night SportsCar Series</h3>
+          <p>GT3 & Sports Car Action. Starting Feb 28th.</p>
+          <button class="btn" style="width: auto;" onclick="navigateTo('view-sportscar-series')">View Details</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: SPORTSCAR SERIES      -->
+    <!-- =========================== -->
+    <div id="view-sportscar-series" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-saturday-hub')">&lt;&lt; Back to Saturday Hub</button>
+      
+      <h1>Saturday Night SportsCar Series</h1>
+      
+      <div class="series-nav-bar">
+        <button class="series-nav-btn btn-gf" onclick="window.open('http://gridfinder.com/c/ProdigyRacingAssociation', '_blank')">
+          <img src="https://i.imgur.com/OLb4DWH.png" alt="" style="height: 20px; width: auto;">Sign Up on Grid Finder
+        </button>
+        <button class="series-nav-btn" style="background-color: #555; cursor: default;" disabled>Rulebook Coming Soon</button>
+        <button class="series-nav-btn" onclick="window.open('https://simracerhub.com/series_seasons.php?series_id=12881', '_blank')"><img src="https://i.imgur.com/gIeUTuK.png" alt="" style="height: 20px; width: auto;">SimRacerHub Stats</button>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://i.imgur.com/calRaPD.png" style="max-width: 100%; border: 1px solid #444; border-radius: 8px;">
+      </div>
+      
+      <div class="note-box" style="text-align: center;">
+        <strong>Cars:</strong> GT3 / Sports Cars<br>
+        <strong>Qualifying:</strong> 9:00 PM EST
+      </div>
+
+      <h2>Season Schedule</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Round</th>
+            <th>Date</th>
+            <th>Track / Event</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Race 1</td><td>Feb 28th</td><td>Daytona Road Course</td></tr>
+          <tr><td>Race 2</td><td>Mar 7th</td><td>Sebring International Raceway</td></tr>
+          <tr><td>Race 3</td><td>Mar 14th</td><td>Sonoma Raceway</td></tr>
+          <tr><td>Race 4</td><td>Mar 21st</td><td>Long Beach Street Circuit</td></tr>
+          <tr><td>Race 5</td><td>Mar 28th</td><td>Circuit de Spa-Francorchamps</td></tr>
+          
+          <tr style="background-color: #2a2a0a; border: 2px solid #d4af37;">
+            <td colspan="3" style="text-align: center; color: #ffd700; font-weight: bold; padding: 15px;">
+              <div style="text-transform: uppercase; font-size: 1.1em; margin-bottom: 5px;">🏆 Mid Season Special Event 🏆</div>
+              <div style="color: #fff; font-size: 0.95em;">April 4th @ Lime Rock Park</div>
+              <div style="font-weight: normal; font-size: 0.9em; margin-top: 5px;">
+                2 Hours | Team Event (2 Drivers) | GT3 Only<br>
+                <span style="color: #4caf50;">$100 To Win</span><br>
+                <em style="color: #aaa;">Choose your own teammate! More details coming soon.</em>
+              </div>
+            </td>
+          </tr>
+
+          <tr><td>Race 6</td><td>Apr 11th</td><td>Watkins Glen International</td></tr>
+          <tr><td>Race 7</td><td>Apr 18th</td><td>Road America</td></tr>
+          <tr><td>Race 8</td><td>Apr 25th</td><td>Monza</td></tr>
+          <tr><td>Race 9</td><td>May 2nd</td><td>Red Bull Ring</td></tr>
+          <tr><td>Race 10</td><td>May 9th</td><td>Road Atlanta</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: VISION CORSA DETAIL   -->
+    <!-- =========================== -->
+    <div id="view-vision-corsa" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-tuesday-hub')">&lt;&lt; Back to Tuesday Hub</button>
+      
+      <h1>Vision Corsa IndyCar Series TUESDAY NIGHT THUNDER SEASON 4 Presented by PRA</h1>
+      
+      <div class="series-nav-bar">
+        <button class="series-nav-btn btn-gf" onclick="window.open('https://www.gridfinder.com/c/ProdigyRacingAssociation/indycar-series-or-season-4', '_blank')">
+          <img src="https://i.imgur.com/OLb4DWH.png" alt="" style="height: 20px; width: auto;">Sign Up on Grid Finder
+        </button>
+        <button class="series-nav-btn" style="background-color: #555; cursor: default;" disabled>Official Rulebook Coming Soon</button>
+        <button class="series-nav-btn" onclick="window.open('https://simracerhub.com/series_seasons.php?series_id=12932', '_blank')"><img src="https://i.imgur.com/gIeUTuK.png" alt="" style="height: 20px; width: auto;">SimRacerHub Stats</button>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://i.imgur.com/0duu7gX.png" style="max-width: 100%; border: 1px solid #444; border-radius: 8px;">
+      </div>
+      
+      <div class="note-box" style="text-align: center;">
+        <strong>Season 4 Starting Feb 2026</strong><br>
+        <strong>Car:</strong> Dallara IR18
+      </div>
+
+      <h2>Race Night Schedule</h2>
+      <ul>
+        <li><strong>8:30 PM EST:</strong> Practice</li>
+        <li><strong>9:00 PM EST:</strong> Qualifying</li>
+        <li><strong>9:10 PM EST:</strong> Race</li>
+      </ul>
+
+      <h2>RACE SCHEDULE</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Race</th>
+            <th>Track</th>
+            <th>Laps</th>
+            <th>Weather</th>
+            <th>Date</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Race 1</td><td>Long Beach</td><td>50</td><td>clear</td><td>Feb 24th, 2026</td><td></td></tr>
+          <tr><td>Race 2</td><td>Phoenix</td><td>100</td><td>Night</td><td>Mar 3rd, 2026</td><td></td></tr>
+          <tr><td>Race 3</td><td>Road America</td><td>25</td><td>Rain in quali, dry in race</td><td>Mar 10th, 2026</td><td></td></tr>
+          <tr><td>Race 4</td><td>Milwaukee Mile</td><td>100</td><td>Partly Cloudy</td><td>Mar 24th, 2026</td><td></td></tr>
+          <tr><td>Race 5</td><td>Indy Motor Speedway (RC)</td><td>40</td><td>Starts dry rain at end</td><td>Mar 31st, 2026</td><td>STANDING START</td></tr>
+          <tr><td>Race 6</td><td>Indy Motor Speedway (oval)</td><td>40</td><td>clear</td><td>Apr 7th, 2026</td><td></td></tr>
+          <tr><td>All Star</td><td>Talladega</td><td>30</td><td>clear</td><td>Apr 14th, 2026</td><td>Caution laps don't count</td></tr>
+          <tr><td>Race 7</td><td>Mid Ohio</td><td>42</td><td>overcast</td><td>Apr 21st, 2026</td><td></td></tr>
+          <tr><td>Race 8</td><td>Iowa</td><td>125</td><td>Night</td><td>Apr 28th, 2026</td><td></td></tr>
+          <tr><td>Race 9</td><td>Detroit</td><td>43</td><td>🌧 Rain 🌧</td><td>May 5th, 2026</td><td></td></tr>
+          <tr><td>Race 10</td><td>Pocono</td><td>40</td><td>partly cloudy</td><td>May 12th, 2026</td><td></td></tr>
+          <tr><td>Race 11</td><td>Barber</td><td>42</td><td>clear</td><td>May 19th, 2026</td><td></td></tr>
+          <tr><td>Race 12</td><td>Michigan</td><td>50</td><td>cloudy</td><td>May 26th, 2026</td><td></td></tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: GF NOSTALGIA DETAIL   -->
+    <!-- =========================== -->
+    <div id="view-gf-nostalgia" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-series-monday')">&lt;&lt; Back to Monday Hub</button>
+      
+      <h1 style="border: none;">Grid Finder Nostalgia Series</h1>
+      
+      <div class="series-nav-bar">
+        <button class="series-nav-btn btn-gf" onclick="window.open('https://www.gridfinder.com/c/ProdigyRacingAssociation/grid-finder-nostalgia-series', '_blank')">
+          <img src="https://i.imgur.com/OLb4DWH.png" alt="" style="height: 20px; width: auto;">Sign Up on Grid Finder
+        </button>
+        <button class="series-nav-btn" onclick="navigateTo('view-rules-nostalgia')">View Series Rulebook</button>
+        <button class="series-nav-btn" onclick="window.open('https://simracerhub.com/series_seasons.php?series_id=13619', '_blank')"><img src="https://i.imgur.com/gIeUTuK.png" alt="" style="height: 20px; width: auto;">SimRacerHub Stats</button>
+      </div>
+      
+      <strong style="color: red; font-size: 40px;">Season 2 Coming Soon....</strong>
+
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: ASPHALT ASSAULT       -->
+    <!-- =========================== -->
+    <div id="view-asphalt-assault" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-series-monday')">&lt;&lt; Back to Monday Hub</button>
+      
+      <h1>Asphalt Assault Series - Season 4</h1>
+      
+      <div class="series-nav-bar">
+        <button class="series-nav-btn btn-gf" onclick="window.open('https://www.gridfinder.com/c/ProdigyRacingAssociation/iracing-asphalt-assault-series-or-season-4', '_blank')">
+          <img src="https://i.imgur.com/OLb4DWH.png" alt="" style="height: 20px; width: auto;">Sign Up on Grid Finder
+        </button>
+        <button class="series-nav-btn" onclick="navigateTo('view-rules-asphalt')">View Series Rulebook</button>
+        <button class="series-nav-btn" onclick="window.open('https://simracerhub.com/series_seasons.php?series_id=13127', '_blank')"><img src="https://i.imgur.com/gIeUTuK.png" alt="" style="height: 20px; width: auto;">SimRacerHub Stats</button>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://i.imgur.com/8UXquHO.png" style="max-width: 100%; border: 1px solid #444; border-radius: 8px;">
+      </div>
+
+      <div class="note-box">
+        <strong>Car:</strong> Street Stocks<br>
+        <strong>League ID:</strong> 12999<br>
+        <strong>Setup:</strong> Fixed
+      </div>
+
+      <h2>Race Night Schedule</h2>
+      <ul>
+        <li><strong>8:00 PM EST:</strong> Practice</li>
+        <li><strong>8:25 PM EST:</strong> Qualifying</li>
+        <li><strong>8:30 PM EST:</strong> Race</li>
+      </ul>
+
+      <h2>Season Schedule</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Race</th>
+            <th>Date</th>
+            <th>Track</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Race 1</td><td>Feb 2nd, 2026</td><td>USA International Speedway</td></tr>
+          <tr><td>Race 2</td><td>Feb 9th, 2026</td><td>Lanier National Speedway</td></tr>
+          <tr><td>Race 3</td><td>Feb 16th, 2026</td><td>Thompson Speedway Motorsports Park</td></tr>
+          <tr><td>Race 4</td><td>Feb 23rd, 2026</td><td>Langley Speedway</td></tr>
+          <tr><td>Race 5</td><td>Mar 2nd, 2026</td><td>Phoenix [Legacy]</td></tr>
+          <tr><td>Race 6</td><td>Mar 9th, 2026</td><td>South Boston Speedway</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: ASPHALT ASSAULT RULEBOOK -->
+    <!-- =========================== -->
+    <div id="view-rules-asphalt" class="view-section text-left">
+      <button class="btn btn-back" onclick="navigateTo('view-asphalt-assault')">&lt;&lt; Back to Asphalt Assault</button>
+      <h1 style="text-align:center;">Asphalt Assault Series Rulebook</h1>
+
+      <div class="note-box">
+        <h3>Series Officials</h3>
+        <ul class="sec-list">
+          <li><strong>Series Director:</strong> Justin May (Phoenix)</li>
+          <li><strong>Officiating Crew:</strong> Shannon Milliken (Flashbang)</li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <h3>Race Settings</h3>
+        <ul class="sec-list">
+          <li>Time Limit: 1 Hour | Practice Length: 25 Minutes</li>
+          <li>Qualifying Laps: 2</li>
+          <li>Race Laps: Varies Per Track</li>
+          <li>Start Zone: ❌</li>
+          <li>Fast Repairs: 1</li>
+          <li>Max Incidents: N/A</li>
+          <li>Incident Warning: ❌</li>
+          <li>Qualifying Conduct Scrutiny: Strict</li>
+          <li>Starting Type: Rolling</li>
+          <li>Restart Type: Double-File Back</li>
+          <li>G/W/C Attempts: 2</li>
+          <li>Full Course Cautions: ✔</li>
+          <li>Lucky Dog: ✔</li>
+          <li>Wave Arounds: ✔</li>
+          <li>Repeat Cautions - Single File Restart: ✔</li>
+          <li>Damage: ✔</li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <h3>Advanced Settings</h3>
+        <ul class="sec-list">
+          <li><strong>Hardcore Level:</strong> Disallow all driving aids (but clutch assist OK)</li>
+          <li><strong>License Range:</strong> Rookie 1.0 > PRO/WC 4.0</li>
+          <li><strong>Fixed Setup:</strong> Provided by iRacing unless track has no default.</li>
+        </ul>
+      </div>
+
+      <h2>Practice & Racing Etiquette</h2>
+      <div class="penalty-box">
+        <p><strong>Practice:</strong> Drivers must maintain control. Rude driving or intentional wrecking in practice will result in disqualification from the event.</p>
+        <p><strong>Clean Racing:</strong> A maximum of <strong>3 EOL penalties</strong> are allowed before disqualification.</p>
+        <p><strong>Aggressive Driving:</strong> Do not drive through others just because you are faster. Causing an incident due to impatience will result in an EOL or DQ.</p>
+      </div>
+
+      <h2>Starts & Restarts</h2>
+      <ul class="sec-list">
+        <li><strong>Leader Control:</strong> Starts/Restarts are at the discretion of the leader.</li>
+        <li><strong>2nd Place:</strong> Must not jump the start. Passing the leader before the line = Drive Through Penalty.</li>
+        <li><strong>Lane Integrity:</strong> Do not pass the driver in your line before the start/finish line unless avoiding an emergency.</li>
+        <li><strong>Issues:</strong> If you have an issue (missed shift, etc.), pull to the apron immediately.</li>
+      </ul>
+
+      <h2>Incident Rules</h2>
+      <ul class="sec-list">
+        <li><strong>At Fault:</strong> Drivers deemed "At Fault" (including self-spins) receive an EOL.</li>
+        <li><strong>Strike Out:</strong> 4th EOL penalty = DQ.</li>
+        <li><strong>Aggressive Driving:</strong> If a driver gets an EOL and then drives over others on the restart, they will be DQ'd.</li>
+        <li><strong>DO NOT ARGUE:</strong> Arguing with officials in race chat results in immediate ejection.</li>
+      </ul>
+
+      <h2>Points Penalties</h2>
+      <div class="penalty-box">
+        <ul>
+          <li><strong>1st Fault:</strong> EOL (No points penalty)</li>
+          <li><strong>2nd Fault:</strong> EOL + (-10 pts)</li>
+          <li><strong>3rd Fault:</strong> DQ (0 pts for race)</li>
+          <li><strong>Intentional Crash:</strong> 1 Race Suspension + 0 pts</li>
+        </ul>
+      </div>
+
+      <h2>Probation Rules</h2>
+      <p>If a driver has been DQ'd, they are on probation for 1 race.</p>
+      <ul class="sec-list">
+        <li>Drivers on probation get -10 points per fault (No "freebie" first EOL).</li>
+        <li>3rd fault on probation = DQ.</li>
+        <li>DQ while on probation = Suspension until start of next season.</li>
+      </ul>
+
+      <h2>Number Rules</h2>
+      <p>Maximum of 3 drivers can have the same number (e.g., #3). First driver gets #3. Second must use a variation (e.g., 03 or 3a). Third must use another variation (e.g., 003 or 3JTM).</p>
+
+      <h2>Last Place Points (LPP)</h2>
+      <p>Drivers can post "LPP" in the Discord channel for races they miss. They will receive points as if they finished last in every session of that event.</p>
+
+      <h2>Voice Chat Rules</h2>
+      <p>Race-related comms only. No personal conversations. Toxicity or arguing with officials results in muting and potential post-race penalties.</p>
+
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: GF NOSTALGIA RULES    -->
+    <!-- =========================== -->
+    <div id="view-rules-nostalgia" class="view-section text-left">
+      <button class="btn btn-back" onclick="navigateTo('view-gf-nostalgia')">&lt;&lt; Back to Grid Finder Nostalgia Series</button>
+      <h1 style="text-align:center;">Grid Finder Gen4 Pilot Series — Driver Quick Guide (Season 1)</h1>
+
+      <div class="note-box">
+        <h3>1. Series Overview</h3>
+        <ul class="sec-list">
+          <li><strong>Car:</strong> NASCAR Gen4 Cup Car</li>
+          <li><strong>Setups:</strong> FIXED SETUPS for all races</li>
+          <li><strong>Format:</strong> ~1 hour of green-flag racing, cautions expected</li>
+          <li><strong>Points:</strong> 2003 Winston Cup Points (NO playoffs, NO stages)</li>
+          <li><strong>Restarts:</strong> Double-file, lapped cars on the inside, lead-lap cars on the outside</li>
+          <li><strong>GWC:</strong> Only one (1) attempt</li>
+          <li><strong>Cautions:</strong> Standard iRacing cautions, no controlled cautions</li>
+          <li><strong>Wavearounds:</strong> Only the Lucky Dog</li>
+          <li><strong>Weather:</strong> Dynamic</li>
+          <li><strong>Track State:</strong> Carry Over (Debris will be cleaned)</li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <h3>Prizes</h3>
+        <ul class="sec-list">
+          <li><strong>1st Place (Champion of the series):</strong> 50$ iRacing Credits</li>
+          <li><strong>2nd Place:</strong> 20$ iRacing Credits</li>
+          <li><strong>3rd Place:</strong> 10$ iRacing Credits</li>
+        </ul>
+      </div>
+
+      <div class="note-box">
+        <h3>Schedule & Race Dates:</h3>
+        <ul class="sec-list">
+          <li><strong>Daytona - Monday, December 15th</strong></li>
+          <li><strong>Atlanta (Legacy) - Monday, December 22nd</strong></li>
+          <li><strong>Rockingham - Monday, January 6th</strong></li>
+          <li><strong>Michigan - Monday, January 13th</strong></li>
+          <li><strong>Richmond - Monday, January 20th</strong></li>
+          <li><strong>Homestead - Monday, January 27th</strong></li>
+        </ul>
+        <p><strong>All races are to follow the following format:</strong></p>
+        <ul class="sec-list">
+          <li><strong>8:00PM EST - Server Launches & Practice Starts</strong></li>
+          <li><strong>9:00PM EST - Qualifying starts (5 mins, 2 laps)</strong></li>
+          <li><strong>Followed by a 5 minute warmup, then Grid.</strong></li>
+        </ul>
+      </div>
+
+      <h2>2. Conduct Expectations</h2>
+      <p>You are required to follow:</p>
+      <ul class="sec-list">
+        <li>iRacing Sporting Code</li>
+        <li>PRA Rulebook (contact rules, communication rules, professionalism)</li>
+        <li>Grid Finder community standards</li>
+        <li><strong>No toxicity. No abuse. No bigotry.</strong></li>
+      </ul>
+
+      <h2>3. Start & Restart Rules</h2>
+      <h3>Start Procedure</h3>
+      <ul class="sec-list">
+        <li>Standard double file rolling start</li>
+      </ul>
+
+      <h3>Restart Alignment</h3>
+      <ul class="sec-list">
+        <li>Double-file restarts</li>
+        <li>Lapped cars form inside line</li>
+        <li>Lead-lap form outside line</li>
+      </ul>
+
+      <h3>Lucky Dog Rule</h3>
+      <ul class="sec-list">
+        <li>Only the highest-running lapped car behind the leader earns the Lucky Dog</li>
+        <li>No other wave-arounds</li>
+        <li>No intentional manipulation allowed</li>
+      </ul>
+
+      <h2>4. Caution Rules</h2>
+      <ul class="sec-list">
+        <li>Standard iRacing system</li>
+        <li>No controlled cautions</li>
+        <li>Officials may extend yellow laps as needed</li>
+        <li>The PRA contact system applies (summarized):
+          <ul class="sub-sec-list">
+            <li>Unintentional contact → PRA penalties</li>
+            <li>Intentional contact → 1-week suspension</li>
+            <li>Race manipulation → DQ or stronger</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2>5. Green-White-Checkered</h2>
+      <ul class="sec-list">
+        <li>Only one attempt</li>
+        <li>If the field fails to reach white during the single attempt, the race ends under caution</li>
+      </ul>
+
+      <h2>6. Blue Flags & Lapped Traffic</h2>
+      <ul class="sec-list">
+        <li>Blue flag = informational</li>
+        <li>Lapped cars may race, but must be predictable</li>
+        <li>Faster cars must pass cleanly</li>
+      </ul>
+
+      <h2>7. Pit Road Rules</h2>
+      <ul class="sec-list">
+        <li>Standard iRacing pit rules apply</li>
+      </ul>
+
+      <h2>8. Paint Schemes</h2>
+      <ul class="sec-list">
+        <li>Must be professional</li>
+        <li>No inappropriate paints</li>
+        <li>Car number must match registration</li>
+      </ul>
+
+      <h2>9. Points System (2003 Winston Cup)</h2>
+      <h3>Base Points:</h3>
+      <ul class="sec-list">
+        <li><strong>1st:</strong> 180</li>
+        <li><strong>2nd:</strong> 170</li>
+        <li><strong>3rd:</strong> 165</li>
+        <li><strong>4th:</strong> 160</li>
+        <li><strong>5th:</strong> 155</li>
+        <li><strong>6th:</strong> 150</li>
+        <li><strong>7th:</strong> 146</li>
+        <li><strong>8th:</strong> 142</li>
+        <li><strong>9th:</strong> 138</li>
+        <li><strong>10th:</strong> 134</li>
+        <li><strong>11th:</strong> 130 (then –3 points per position down to 43rd)</li>
+      </ul>
+
+      <h3>Bonus Points:</h3>
+      <ul class="sec-list">
+        <li>+5 for leading at least one lap</li>
+        <li>+5 for leading the most laps</li>
+        <li><strong>Max per race:</strong> 190 points</li>
+      </ul>
+
+      <h3>Teams Championship (WIP)</h3>
+      <ul class="sec-list">
+        <li>Teams will be Limited to 4 Entries (Drivers) per team.</li>
+        <li>There will be no prize for the overall team championship winner.</li>
+        <li>Standings will be simply based on Points Accumulated.</li>
+        <li>Team submissions must be made via discord & logo must be supplied.</li>
+      </ul>
+
+      <h2>10. Incidents & Submissions</h2>
+      <ul class="sec-list">
+        <li>Submit incident forms via Discord</li>
+        <li>Deadline: midnight the day after the race</li>
+        <li>Netcode incidents = no penalty</li>
+      </ul>
+
+      <h2>11. Administration</h2>
+      <p>Series is run by:</p>
+      <ul class="sec-list">
+        <li>Justin Pheonix & Cody Below of PRA</li>
+        <li>Daniel Blanco of Grid Finder</li>
+        <li>David Nannen - General Administrator</li>
+      </ul>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: CROWN JEWEL SERIES    -->
+    <!-- =========================== -->
+    <div id="view-crown-jewel" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-series-monday')">&lt;&lt; Back to Monday Hub</button>
+      
+      <h1>Crown Jewel Late Model Series</h1>
+      
+      <div class="series-nav-bar">
+        <button class="series-nav-btn btn-gf" onclick="window.open('https://www.gridfinder.com/c/ProdigyRacingAssociation/crown-jewel-late-model-series-or-season-1', '_blank')">
+          <img src="https://i.imgur.com/OLb4DWH.png" alt="" style="height: 20px; width: auto;">Sign Up on Grid Finder
+        </button>
+        <button class="series-nav-btn" style="background-color: #555; cursor: default;" disabled>Rulebook Coming Soon</button>
+        <button class="series-nav-btn" onclick="window.open('https://simracerhub.com/series_seasons.php?series_id=13620', '_blank')"><img src="https://i.imgur.com/gIeUTuK.png" alt="" style="height: 20px; width: auto;">Crown Jewel Stats</button>
+        <button class="series-nav-btn" onclick="window.open('https://simracerhub.com/series_seasons.php?series_id=13128', '_blank')"><img src="https://i.imgur.com/gIeUTuK.png" alt="" style="height: 20px; width: auto;">Late Model Stats</button>
+        <button class="series-nav-btn" onclick="window.open('https://simracerhub.com/series_seasons.php?series_id=12765', '_blank')"><img src="https://i.imgur.com/gIeUTuK.png" alt="" style="height: 20px; width: auto;">Super Late Model Stats</button>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <img src="https://i.imgur.com/CKy2g9a.png" style="max-width: 100%; border: 1px solid #444; border-radius: 8px;">
+      </div>
+
+      <div class="note-box" style="text-align: center;">
+        <strong>Season 1 Starting Feb 2026</strong><br>
+        <strong>Cars:</strong> Super Late Models & Late Model Stocks
+      </div>
+
+      <div class="penalty-box" style="text-align: center; border-left: 5px solid #ffd700; background-color: #2a2a0a; color: #ffeb3b;">
+        <h3 style="color: #ffd700; margin-top: 0;">Series Payouts</h3>
+        <p><strong>$100</strong> Overall Champion</p>
+        <p><strong>$50</strong> Super Late Model Champion | <strong>$50</strong> Late Model Stock Champion</p>
+        <hr style="border-color: #555; margin: 10px 0;">
+        <p><strong>Rum's Race Bounty:</strong> $25 per race winner</p>
+        <p><strong>Pole Award:</strong> $5 per race</p>
+      </div>
+
+      <h2>Race Night Schedule</h2>
+      <ul>
+        <li><strong>9:00 PM EST:</strong> Practice</li>
+        <li><strong>9:15 PM EST:</strong> Qualifying</li>
+        <li><strong>9:20 PM EST:</strong> Race</li>
+      </ul>
+
+      <h2>Season Schedule</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Race</th>
+            <th>Date</th>
+            <th>Event / Track</th>
+            <th>Laps</th>
+            <th>Car</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Feb 2nd, 2026</td><td>Snowball Derby (Five Flags)</td><td>150</td><td>Super Late Model</td></tr>
+          <tr><td>2</td><td>Feb 9th, 2026</td><td>ValleyStar 100 (Martinsville)</td><td>100</td><td>Late Model Stock</td></tr>
+          <tr><td>3</td><td>Feb 16th, 2026</td><td>All American 200 (Nashville Fairgrounds)</td><td>200</td><td>Super Late Model</td></tr>
+          <tr><td>4</td><td>Feb 23rd, 2026</td><td>Hampton Heat (Langley)</td><td>100</td><td>Late Model Stock</td></tr>
+          <tr><td>5</td><td>Mar 2nd, 2026</td><td>Slinger Nationals (Slinger)</td><td>100</td><td>Super Late Model</td></tr>
+          <tr><td>6</td><td>Mar 9th, 2026</td><td>SoBo 100 (South Boston)</td><td>100</td><td>Late Model Stock</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: WRECKFEST             -->
+    <!-- =========================== -->
+    <div id="view-wreckfest" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-home')">&lt;&lt; Back to Home</button>
+      <h1>Wreckfest Hub</h1>
+      <p style="text-align: center; margin-bottom: 30px;">Choose a platform below to see league details.</p>
+
+      <div class="grid-container">
+        <!-- PSN Wreckfest Card -->
+        <div class="card">
+          <div>
+            <div class="logo-box">
+              <img src="https://i.imgur.com/CHIgZlg.png" class="logo-img">
+            </div>
+            <h3>PSN Wreckfest</h3>
+            <p>Wreckfest on PlayStation Network.</p>
+          </div>
+          <button class="btn" onclick="navigateTo('view-wreckfest-psn')">Enter Hub</button>
+        </div>
+
+        <!-- PC Wreckfest Card -->
+        <div class="card">
+          <div>
+            <div class="logo-box">
+              <img src="https://i.imgur.com/OBP1BVS.png" class="logo-img">
+            </div>
+            <h3>PC Wreckfest</h3>
+            <p>Wreckfest on PC.</p>
+          </div>
+          <button class="btn" onclick="navigateTo('view-wreckfest-pc')">Enter Hub</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: WRECKFEST PSN         -->
+    <!-- =========================== -->
+    <div id="view-wreckfest-psn" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-wreckfest')">&lt;&lt; Back to Wreckfest Hub</button>
+      <h1>PSN Wreckfest Weekly Schedule</h1>
+      <div style="text-align: center; margin-bottom: 20px;">
+        <button class="btn" onclick="navigateTo('view-wreckfest-psn-rules')">View Official Rulebook</button>
+      </div>
+      
+      <!-- Wreckfest Weekly Grid -->
+      <div class="schedule-grid">
+        
+        <!-- SUNDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Sunday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- MONDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Monday</div>
+          <div class="day-content">
+            <div class="event-item">
+              <img src="https://i.imgur.com/CHIgZlg.png" class="series-mini-logo">
+              <div class="event-info">
+                <span class="event-time">8:00 PM EST</span>
+                <span class="event-title">PSN Wreckfest Series</span>
+              </div>
+            </div>
+            <button class="btn view-details-btn" onclick="navigateTo('view-wreckfest-psn-series')">View All Details</button>
+          </div>
+        </div>
+
+        <!-- TUESDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Tuesday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- WEDNESDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Wednesday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- THURSDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Thursday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- FRIDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Friday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- SATURDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Saturday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: WRECKFEST PSN SERIES  -->
+    <!-- =========================== -->
+    <div id="view-wreckfest-psn-series" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-wreckfest-psn')">&lt;&lt; Back to PSN Wreckfest</button>
+      <h1>PSN Wreckfest Weekly Schedule</h1>
+      
+      <div class="note-box" style="text-align: left;">
+        <h3>SEASON 27 ANNOUNCEMENT</h3>
+        <p>HELLO WRECKFESTERS!!!!</p>
+        <p>We have some major changes coming into season 27!!!</p>
+        <p>We will be having what we are calling a "mix & match season"</p>
+        <p>What is a mix and match season?</p>
+        <ul style="list-style-type: none; padding-left: 20px;">
+            <li>3 selected cars for the season (to be announced soon)</li>
+        </ul>
+        <p>Tracks and cars are going to be randomized each week</p>
+        <ul style="list-style-type: none; padding-left: 20px;">
+            <li>-Every "safe" track in PRA history is available to be ran.</li>
+        </ul>
+        <p>Each week a randomizer wheel will be spun for the cars and tracks. I will be the only one who knows of the randomized tracks to ensure fairness across all racers.</p>
+        <p>An hour before the races are due to start I will annouce the car & track we will be running. Each driver will then have an hour to work alone or together to find the best tunes and lines to be the fastest on the track!</p>
+        <p>This format looks to remove the many many hours of practice time required to be competitive and balance out practice & commitment time for all! </p>
+        <p>For the people who enjoy practicing and learning the cars each season we are keeping the randomized cars down to 3 so drivers if they wish to can become familiar with each one.</p>
+        <p>Keep in mind there is a possibility we only end up running 1 or 2 cars this season if the 3rd is never randomly selected.</p>
+        <p>Lastly due to the generosity from many of you in the league I now (after many failed attempts) have installed stable internet! I will be streamin this season!</p>
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: WRECKFEST PSN RULEBOOK -->
+    <!-- =========================== -->
+    <div id="view-wreckfest-psn-rules" class="view-section text-left">
+      <button class="btn btn-back" onclick="navigateTo('view-wreckfest-psn')">&lt;&lt; Back to PSN Wreckfest</button>
+      <h1 style="text-align:center;">PRA Wreckfest Rules</h1>
+
+      <h2>Unintentional Contact</h2>
+      <p>Will be reviewed as requested through the submitted incident form. The form will be in the discord with all the steps of how to submit as well as when they need to be submitted by. Any infractions that are unintentional will be reviewed by the race officials and Board of Directors. They will make the decision of time penalties and/or (in rare cases) race suspensions.</p>
+      <p>Unintentional contact could include any of the following plus any that the Board deems infraction worthy.</p>
+      <ul>
+        <li>Bump and Runs</li>
+        <li>Corner diving of 2 or more car lengths</li>
+        <li>Not backing out of locked corner panels (bumper locks)</li>
+      </ul>
+
+      <h2>Intentional Contact</h2>
+      <p>Intentional contact includes,</p>
+      <ul>
+        <li>Avoidable pit moves (intentionally turning into another vehicle’s corner panel)</li>
+        <li>Avoidable Dive bombs (0 braking in corner, targeting another driver)</li>
+        <li>Driving backwards</li>
+        <li>Pushing people off the track (with ill intent)</li>
+      </ul>
+      <p>All of these infractions will have a punishment of 1 full week suspension of the main series. If the infraction occurs on the championship week, the suspension will be carried over to the following season.</p>
+
+      <h2>Instant Quitting Races</h2>
+      <p>New to Season 22! We have received complaints of drivers leaving races mid match causing confusion and potential wrecks due to lag and cars disappearing from the track.</p>
+      <p>Our new procedure for leaving mid race is listed below:</p>
+      <ol>
+        <li>Pull over to a safe place off the track not impeding other drivers.</li>
+        <li>Inform the race official you are leaving the race.</li>
+      </ol>
+      <p>Only after the completion of steps 1 & 2 may a driver leave the race.</p>
+      <p><strong>FAILURE TO FOLLOW THE STEPS ABOVE WILL FORFEIT YOUR POINTS FOR THAT RACE WEEK. REPEAT OFFENSES CAN LEAD TO GREATER CONSEQUENCES.</strong></p>
+
+      <h2>Enforcing Infractions</h2>
+      <p>In order for infractions to be enforced you will need to send in an incident form, there will be an incident from in the discord. <strong>THESE MUST BE FILLED IN BY THE DAY AFTER THE RACE.</strong> At midnight on the day after the races no incident form will be considered. If the incident form is not working for you, you must reach out to a member of the BOARD OF DIRECTORS. Either COLTCHEVY88, WIRED__TN OR SQUELLER_22.</p>
+
+      <h2>Cautions</h2>
+      <p>We will be on a two tally system, and will be racing back to the start/finish line when a caution is called. <strong>EACH RACE WILL HAVE A DEDICATED RACE OFFICIAL.</strong> The official will be the only person able to call cautions as well as restarts in the race.</p>
+      <p>When a caution is called and you race back to the line you will start wherever you cross the line, even if you are involved in the tally causing caution.</p>
+
+      <h3>Tallies</h3>
+      <p>A tally occurs when 1 car is spun in a racing incident involving 2 or more drivers. This means that if you are by yourself and spin or overcook a corner, a tally will not be called!</p>
+      <p><strong>IF BOTH CARS ARE SPUN, that will be considered 2 tallies and a caution will be thrown out.</strong></p>
+      <p><strong>NEW TO SEASON 18: TALLIES CAN BE CALLED ON THE FIRST LAP OF THE RACE AND ON RESTARTS</strong></p>
+
+      <h2>POINTS</h2>
+      <p>In PRA WRECKFEST we will be using a step down points system.</p>
+      <ul>
+        <li>1st - 20 pts</li>
+        <li>2nd - 19 pts</li>
+        <li>3rd - 18 pts …</li>
+      </ul>
+
+      <h3>Bonus Points</h3>
+      <ul>
+        <li>There will be a bonus point awarded to the pole setter during qualifying.</li>
+        <li>There will be a bonus point awarded to the driver who achieved the fastest lap during the race.</li>
+      </ul>
+
+      <h3>Tie Breakers</h3>
+      <p>In the event of a tie in points at the end of the season the tie breaker will go to most race wins. If both drivers are still tied the tie breaker will go to laps lead.</p>
+
+      <h3>Last Place Points (LPP)</h3>
+      <p>New to Season 22! Drivers are now able to sign up to receive last place points if they know they are going to miss a race. All drivers who choose this option BEFORE the race starts will receive points as if they raced and finished last BEHIND the driver who showed up and finished last in the actual race. All drivers who sign up for LPP will receive the same amount of points.</p>
+      <p>There will be a channel to sign up for LPP in the discord.</p>
+
+      <h2>TEAM RACING ONLY</h2>
+      <p>For your teams points we will be taking the top 3 points finishers on your team, they will be added to your overall teams points. The reason for this is in case one of your teammates is unable to attend the races.</p>
+      <p><strong>IF A TEAMMATE IS UNABLE TO ATTEND, you will be able to pick up a free agent that is registered to fill in those spots. I will reach out as soon as possible to the team to let them know a teammate did not register if they don’t already know!</strong></p>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: WRECKFEST PC          -->
+    <!-- =========================== -->
+    <div id="view-wreckfest-pc" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-wreckfest')">&lt;&lt; Back to Wreckfest Hub</button>
+      <h1>PC Wreckfest Weekly Schedule</h1>
+      
+      <!-- Rulebook Button -->
+      <div style="text-align: center; margin-bottom: 20px;">
+        <button class="btn" style="background-color: #555; cursor: not-allowed; opacity: 0.7;" disabled>Official Rulebook Coming Soon</button>
+      </div>
+      
+      <!-- Wreckfest Weekly Grid -->
+      <div class="schedule-grid">
+        
+        <!-- SUNDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Sunday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- MONDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Monday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+             <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- TUESDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Tuesday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- WEDNESDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Wednesday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- THURSDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Thursday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- FRIDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Friday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- SATURDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Saturday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: GRAN TURISMO 7        -->
+    <!-- =========================== -->
+    <div id="view-gt7" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-home')">&lt;&lt; Back to Home</button>
+      <h1>Gran Turismo 7 Weekly Schedule</h1>
+      
+      <!-- Rulebook Button -->
+      <div style="text-align: center; margin-bottom: 20px;">
+        <button class="btn" style="background-color: #555; cursor: not-allowed; opacity: 0.7;" disabled>Official Rulebook Coming Soon</button>
+      </div>
+
+      <!-- GT7 Weekly Grid -->
+      <div class="schedule-grid">
+        
+        <!-- SUNDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Sunday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- MONDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Monday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+             <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- TUESDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Tuesday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- WEDNESDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Wednesday</div>
+          <div class="day-content">
+            <div class="event-item">
+              <img src="https://i.imgur.com/E1VgpRn.png" class="series-mini-logo">
+              <div class="event-info">
+                <span class="event-time">8:00 PM EST</span>
+                <span class="event-title">International Sports Car Series</span>
+              </div>
+            </div>
+            <button class="btn view-details-btn" onclick="navigateTo('view-gt7-wednesday-hub')">View All Details</button>
+          </div>
+        </div>
+
+        <!-- THURSDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Thursday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- FRIDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Friday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- SATURDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Saturday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: AUTOMOBILISTA 2       -->
+    <!-- =========================== -->
+    <div id="view-automobilista2" class="view-section">
+      <button class="btn btn-back" onclick="navigateTo('view-home')">&lt;&lt; Back to Home</button>
+      <h1>Automobilista 2 Weekly Schedule</h1>
+      
+      <!-- Automobilista 2 Buttons -->
+      <div style="text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+        <button class="btn" style="background-color: #555; cursor: not-allowed; opacity: 0.7;" disabled>Grid Finder Coming Soon</button>
+        <button class="btn" style="background-color: #555; cursor: not-allowed; opacity: 0.7;" disabled>Official Rulebook Coming Soon</button>
+      </div>
+
+      <!-- Automobilista 2 Weekly Grid -->
+      <div class="schedule-grid">
+        
+        <!-- SUNDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Sunday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- MONDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Monday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- TUESDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Tuesday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- WEDNESDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Wednesday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- THURSDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Thursday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- FRIDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Friday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+        <!-- SATURDAY -->
+        <div class="schedule-card">
+          <div class="day-header">Saturday</div>
+          <div class="day-content" style="justify-content: center; align-items: center;">
+            <div style="color:#666; font-style:italic;">No races scheduled</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- =========================== -->
+    <!-- VIEW: RULEBOOK              -->
+    <!-- =========================== -->
+    <div id="view-rules" class="view-section text-left">
+      <h1 style="text-align:center;">[ Official Handbook ]</h1>
+      
+      <div class="note-box">
+        <p><strong>Introduction</strong></p>
+        <p>Welcome to Prodigy Racing Association, where we aim to provide a fun, professional racing environment. PRA is currently hosting multiple racing leagues over multiple different platforms including PlayStation Network, PC, and Xbox.</p>
+        <p>This handbook will oversee multiple aspects of PRA and is subject to change at any time. We will do our best to inform league members when an update is made.</p>
+        <p><em>All members are encouraged to contact a league official with any ideas that may improve the quality of the league.</em></p>
+      </div>
+
+      <p>This is the Official Handbook for all of the Prodigy Racing Association racing leagues. Each series will have their own Official Rulebook. In this handbook you will find everything you need to hit the ground running and start your PRA career.</p>
+
+      <!-- Rule 1 -->
+      <div class="handbook-header">[Rule 1] Chat Rooms/Messaging</div>
+      
+      <span class="article-title">[Article 1] Communication</span>
+      <p>Prodigy Racing Association uses the message service ‘Discord’ as its only form of communication.</p>
+
+      <span class="article-title">[Article 2] Conduct</span>
+      <p>League members are expected to maintain clean, respectful conversation in all chats and races.</p>
+      <ul class="sec-list">
+        <li class="sec-item"><span class="sec-label">[Sec. 1]</span> Any derogatory, degrading comments made towards other league members will be reviewed and disciplinary action will be taken.</li>
+        <li class="sec-item"><span class="sec-label">[Sec. 2]</span> PRA will not tolerate harassment of any kind.
+          <ul class="sub-sec-list">
+            <li class="sub-sec-item"><span class="sub-sec-label">[Sub-Sec. 1]</span> Officials have full authority to deem any action as potential harassment.</li>
+          </ul>
+        </li>
+        <li class="sec-item"><span class="sec-label">[Sec. 3]</span> PRA will ensure a professional and friendly racing environment.</li>
+      </ul>
+
+      <span class="article-title">[Article 3] Race Chat</span>
+      <p>During the race, drivers should only talk about race related topics.</p>
+      <ul class="sec-list">
+        <li class="sec-item"><span class="sec-label">[Sec. 1]</span> It is important to keep chatting to a minimum during the races.</li>
+        <li class="sec-item"><span class="sec-label">[Sec. 2]</span> Minimum chatting during the races will lead to a better officiating of the race.</li>
+      </ul>
+
+      <span class="article-title">[Article 4] Detrimental Actions</span>
+      <ul class="sec-list">
+        <li class="sec-item"><span class="sec-label">[Sec 1.]</span> The PRA Board of Directors have FULL authority to deem any actions, made by a league member, detrimental.
+          <ul class="sub-sec-list">
+            <li class="sub-sec-item"><span class="sub-sec-label">[Sub-Sec. 1]</span> Actions can range from in-race to social media posts.</li>
+            <li class="sub-sec-item"><span class="sub-sec-label">[Sub-Sec. 2]</span> Arguing with an official ruling during the race is deemed detrimental to the league.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Rule 2 -->
+      <div class="handbook-header">[Rule 2] Aggressive Driving</div>
+
+      <span class="article-title">[Article 1] Zero Tolerance</span>
+      <p>PRA holds a ZERO tolerance policy towards over aggressive driving.</p>
+      <ul class="sec-list">
+        <li class="sec-item"><span class="sec-label">[Sec. 1]</span> League Officials understand racing to win and although there is a gray area between aggressive and over aggressive driving, drivers are expected to attempt to avoid such scenarios whenever possible.</li>
+        <li class="sec-item"><span class="sec-label">[Sec. 2]</span> PRA Officials have the authority to penalize any driver they think is driving over aggressively.</li>
+      </ul>
+
+      <span class="article-title">[Article 2] Intentional Wrecking</span>
+      <div class="penalty-box">
+        Intentionally spinning or wrecking other league members will result in point deductions, suspensions, or other disciplinary action deemed acceptable by league officials.
+      </div>
+
+      <span class="article-title">[Article 3] Complaints</span>
+      <p>If a driver wishes to file a complaint about a driver, they must submit a complaint.</p>
+      <ul class="sec-list">
+        <li class="sec-item"><span class="sec-label">[Sec. 1]</span> How to submit a complaint
+          <ul class="sub-sec-list">
+            <li class="sub-sec-item"><span class="sub-sec-label">[Sub-Sec. 1]</span> Submit proof to PRA Official using the ‘PRA Complaint Form’ via Discord of the incident.</li>
+            <li class="sub-sec-item"><span class="sub-sec-label">[Sub-Sec. 2]</span> Verbal complaints will be taken into consideration, but the situation will unlikely be fixed without proof.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Rule 3 -->
+      <div class="handbook-header">[Rule 3] Penalties</div>
+
+      <span class="article-title">[Article 1] Assessment</span>
+      <p>A penalty can be assessed to a driver if they race too aggressively, intentionally hindering the racing, or is disrespectful to a PRA Official or driver.</p>
+
+      <span class="article-title">[Article 2] Severity</span>
+      <p>Penalties can range from probation to expulsion from the league (depending on severity of the driver’s actions).</p>
+
+      <span class="article-title">[Article 3] During Race</span>
+      <p>All penalties during the race are non-negotiable.</p>
+      <ul class="sec-list">
+        <li class="sec-item"><span class="sec-label">[Sec. 1]</span> If a driver fails to comply with PRA Officials, they will be removed from the race and further disciplinary actions will be administered.</li>
+      </ul>
+
+      <span class="article-title">[Article 4] Appeals</span>
+      <p>If you are assessed a penalty and do not agree, you can appeal the penalty after both races are concluded.</p>
+
+      <span class="article-title">[Article 5] How to Appeal</span>
+      <ul class="sec-list">
+        <li class="sec-item"><span class="sec-label">[Sec. 1]</span> In order to appeal a penalty, you must private message ‘to the series officials’ on DISCORD saying you appeal the penalty.</li>
+        <li class="sec-item"><span class="sec-label">[Sec. 2]</span> An appeal can contain the following:
+          <ul class="sub-sec-list">
+            <li class="sub-sec-item"><span class="sub-sec-label">[Sub-Sec. 1]</span> A request to chat with PRA Officials to talk about the incident.</li>
+            <li class="sub-sec-item"><span class="sub-sec-label">[Sub-Sec. 2]</span> A Discord message with video/photographic proof.</li>
+            <li class="sub-sec-item"><span class="sub-sec-label">[Sub-Sec. 3]</span> Appointing a witness to talk to PRA Officials.</li>
+          </ul>
+        </li>
+      </ul>
+
+      <span class="article-title">[Article 6] Successful Appeals</span>
+      <p>If a driver WINS the appeal, the driver’s penalty will be reversed, and compensation will be awarded if needed.</p>
+
+      <div class="footer">
+         &copy; Prodigy Racing Association
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</htmlto the

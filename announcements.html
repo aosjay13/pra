@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* --- GLOBAL STYLES (DARK MODE) --- */
+  :root {
+    --pra-red: #cc0000;
+    --pra-red-dark: #a30000;
+    --pra-dark: #0a0a0a;      /* Darker Header */
+    --pra-bg: #121212;        /* Main Background */
+    --pra-card-bg: #1e1e1e;   /* Card Background */
+    --pra-border: #333;       /* Border Color */
+    
+    /* Text Colors */
+    --text-main: #e0e0e0;
+    --text-muted: #a0a0a0;
+    
+    /* Special Box Colors (Dark Variants) */
+    --box-red-bg: #2a0a0a;
+    --box-blue-bg: #0a1a2a;
+    --box-blue-border: #0078d4;
+  }
+
+  /* Force Scrollbar (Dark Themed) */
+  body::-webkit-scrollbar { width: 16px; }
+  body::-webkit-scrollbar-track { background: var(--pra-bg); border-left: 1px solid var(--pra-border); }
+  body::-webkit-scrollbar-thumb { background-color: #444; border-radius: 8px; border: 3px solid var(--pra-bg); }
+  
+  /* FIX: Explicitly set HTML background to match body to prevent white lines at top/bottom */
+  html { 
+    scrollbar-width: auto; 
+    scrollbar-color: #444 var(--pra-bg); 
+    background-color: var(--pra-bg); 
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+
+  body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--text-main);
+    background-color: var(--pra-bg);
+    margin: 0;
+    padding: 0;
+    /* PADDING TOP will be set dynamically by JavaScript */
+    padding-bottom: 60px;
+    overflow-y: auto;
+    text-align: center;
+    min-height: 100%;
+  }
+
+  /* --- HEADER & NAVIGATION (FIXED POSITION) --- */
+  .app-header {
+    background-color: var(--pra-dark);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 5px solid var(--pra-red);
+    
+    /* FIX: Change to Fixed to eliminate top gap */
+    position: fixed; 
+    top: 0;
+    left: 0;
+    right: 0; /* Ensures it spans full width */
+    z-index: 1000; /* High Z-index to stay on top */
+    
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    box-sizing: border-box;
+  }
+
+  .app-title {
+    margin: 0 !important; /* Force margin 0 */
+    text-transform: uppercase;
+    font-size: 1.8em;
+    letter-spacing: 1px;
+    color: white;
+    line-height: 1.2;
+  }
+
+  /* --- VIEW CONTAINER --- */
+  .view-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* --- TYPOGRAPHY & UI --- */
+  h1 { color: var(--pra-red); text-transform: uppercase; border-bottom: 3px solid var(--pra-border); padding-bottom: 10px; margin-top: 0; }
+  h2 { color: white; margin-top: 30px; font-weight: bold; border-bottom: 1px solid var(--pra-border); padding-bottom: 5px; }
+  h3 { color: #ccc; font-size: 1.1em; margin-top: 20px; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
+  
+  p { color: var(--text-main); }
+  
+  .text-left { text-align: left; }
+
+  .btn {
+    display: inline-block;
+    background-color: var(--pra-red);
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .btn:hover { background-color: var(--pra-red-dark); }
+
+  .btn-discord { background-color: #5865F2; }
+  .btn-discord:hover { background-color: #4752c4; }
+
+  .btn-gf { background-color: #FF3D00; }
+  .btn-gf:hover { background-color: #D93300; }
+
+  .btn-back { background-color: #333; margin-bottom: 15px; color: #ccc; }
+  .btn-back:hover { background-color: #444; }
+
+</style>
+<script>
+  // Dynamically adjust body padding to match header height
+  function adjustBodyPadding() {
+    const header = document.querySelector('.app-header');
+    const body = document.body;
+    if (header) {
+      const headerHeight = header.offsetHeight;
+      body.style.paddingTop = headerHeight + 20 + 'px'; // Add 20px buffer
+    }
+  }
+
+  // Adjust on load and resize
+  window.addEventListener('load', adjustBodyPadding);
+  window.addEventListener('resize', adjustBodyPadding);
+</script>
+</head>
+<body>
+
+  <!-- FIXED HEADER -->
+  <div class="app-header">
+    <h2 class="app-title">Prodigy Racing Association</h2>
+  </div>
+
+  <div class="view-container">
+    <h1>Announcements</h1>
+    <div style="text-align: left; max-width: 800px; margin: 0 auto;">
+      <h2>March 12, 2026 Update:</h2>
+      <p><strong>PRA Announces New Jr. Board Members</strong></p>
+      <p>The Prodigy Racing Association (PRA) is excited to officially welcome five new members to the PRA Jr. Board. As PRA continues to grow, the Jr. Board plays an important role in helping manage league operations, support drivers, and strengthen communication across our series.</p>
+      <p>Please join us in welcoming the newest members of the PRA Jr. Board:</p>
+      <ul>
+      <li>Lilmaytag73</li>
+      <li>DavidN</li>
+      <li>JRaySunshine</li>
+      <li>Spider_Monkey_PU</li>
+      <li>RedlineonCanvas</li>
+      </ul>
+      <p>The Jr. Board serves as a key leadership group within PRA. These members act as the first line of communication between drivers, officials, and the full PRA Board of Directors. They help oversee series operations, assist with league administration, and ensure that our events continue to run smoothly and professionally.</p>
+      <p>Most importantly, the Jr. Board helps ensure that PRA can continue to grow while maintaining the competitive, respectful, and community-driven environment that our drivers expect.</p>
+      <p>We are excited to have these individuals stepping into leadership roles and contributing their time and effort to make PRA even better.</p>
+      <p>Please take a moment to congratulate our new Jr. Board Members the next time you see them in the server or on track.</p>
+      <p>Welcome to the team!</p>
+      <p><strong>PRA Board of Directors</strong></p>
+      <hr>
+      <h2>March 11, 2026 Update:</h2>
+      <p>PRA has officially entered a new quarter in iRacing following the exciting conclusion of our recent series! Congratulations to our newly crowned champions:</p>
+      <ul>
+      <li><strong>Hobby Stock Showdown (Season 1):</strong> Daimon Henry captured his first-ever PRA Championship!</li>
+      <li><strong>Asphalt Assault Series (Season 4):</strong> Matthew Byrd won the championship in his rookie PRA season!</li>
+      <li><strong>Crown Jewel Late Model Series:</strong>
+        <ul>
+          <li><strong>Overall Champion:</strong> Matthew Byrd</li>
+          <li><strong>Super Late Model Champion:</strong> Riley Frost</li>
+          <li><strong>Late Model Stock Champion:</strong> Landon Lacey</li>
+        </ul>
+      </li>
+      </ul>
+      <p>The Vision Corsa IndyCar Series has started a new season, and Micah Mixer has won three in a row, so far!</p>
+      <p>The Sports Car Series is heating up after racing at Daytona and then Sebring to round out the Florida races of the season!</p>
+      <p>There are so many things to talk about, including The Gran Turismo 7 League entering Race 6 at the Red Bull Ring with Florinoda leading over Spider Monkey by 42 points in the ISCS Championship!</p>
+      <p>Join our Discord today at <a href="http://discord.gg/pra">http://discord.gg/pra</a> and sign up for one of our various championships on Grid Finder at <a href="http://gridfinder.com/c/ProdigyRacingAssociation">http://gridfinder.com/c/ProdigyRacingAssociation</a>.</p>
+      <hr>
+      <h2>February 6, 2026 Update:</h2>
+      <p>PRA's new website is fully functional, now!<br>
+      We are working on adding all of our stats, points standings, etc here to this website so you don't have to learn how to use Discord to see everything we are doing!</p>
+      <h3>iRacing is under way with 2026 Season 1:</h3>
+      <ul>
+      <li>Hobby Stock Showdown on Sundays</li>
+      <li>Asphalt Assault Series on Mondays</li>
+      <li>Crown Jewel Late Model Series on Mondays</li>
+      <li>Vision Corsa IndyCar Series starting February 24th on Tuesdays</li>
+      <li>Sunset Bend Street Stock Road Course Challenge on Thursdays</li>
+      <li>Saturday Night Sports Car Series starting February 28th on Saturdays</li>
+      </ul>
+      <p>iRacing has a full stacked line-up from several different disciplines for you to choose from!</p>
+      <p>Congratulations to Jacob Schneider on his 4th PRA Championship in 6 months, and partial retirement while he focuses on real-life racing again!</p>
+      <p>Congratulations to all of those in the Vision Corsa IndyCar Series who won money and REAL trophies like George Griffiths and Jacob Schneider!</p>
+      <p>I-think-I-can-W just won another PSN Wreckfest Championship in Season 27!</p>
+      <p>Gran Turismo 7 has started Season 5 of the ISCS over on PlayStation! Florinoda wins the first race!</p>
+      <p>A lot to look forward to in the Prodigy Racing Association!</p>
+      <p>Join today at <a href="http://discord.gg/pra">http://discord.gg/pra</a> and sign up on our Grid Finder at <a href="http://gridfinder.com/c/ProdigyRacingAssociation">http://gridfinder.com/c/ProdigyRacingAssociation</a> to get in on the action!</p>
+      <hr>
+      <h2>January 2026 Update:</h2>
+      <img src="https://i.imgur.com/1DVEZ6W.png" alt="Announcement Image" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+      <!-- NOTE: Future announcements should be added above this line, newest on top, like social media feed -->
+    </div>
+  </div>
+  <hr style="width: 100vw; margin: 0; border: 1px solid var(--pra-border); position: relative; left: 50%; transform: translateX(-50%);">
+  <div class="view-container">
+    <div style="text-align: left; max-width: 800px; margin: 0 auto;">
+      <p><strong>PRODIGY RACING ASSOCIATION - 2026 SEASON 1</strong></p>
+      <p>The <strong>PRA 2026 Season</strong> is officially here! We're bringing <strong>six competitive iRacing series</strong> across multiple disciplines - dirt, asphalt ovals, road courses, IndyCar, and sports cars. Get ready for some incredible racing all season long.</p>
+      <hr>
+      <p><strong>Hobby Stock Showdown</strong></p>
+      <p><strong>Sundays</strong></p>
+      <p><strong>7:00 PM EST</strong></p>
+      <p>Asphalt Street Stocks on <strong>Dirt Ovals</strong></p>
+      <p><strong>January 18 - March 8, 2026</strong></p>
+      <hr>
+      <p><strong>Asphalt Assault Series</strong></p>
+      <p><strong>Mondays</strong></p>
+      <p><strong>8:00 PM EST</strong></p>
+      <p>Asphalt Street Stocks on <strong>Asphalt Ovals</strong></p>
+      <p><strong>February 2 - March 9, 2026</strong></p>
+      <hr>
+      <p><strong>Crown Jewel Late Model Series</strong></p>
+      <p><strong>Mondays</strong></p>
+      <p><strong>9:00 PM EST</strong></p>
+      <p>Super Late Models & Late Model Stocks on <strong>Asphalt Ovals</strong></p>
+      <p><strong>February 2 - March 9, 2026</strong></p>
+      <hr>
+      <p><strong>Vision Corsa IndyCar Series</strong></p>
+      <p><strong>Tuesdays</strong></p>
+      <p><strong>8:30 PM EST</strong></p>
+      <p>Dallara IR18 on <strong>Ovals & Road Courses (Asphalt)</strong></p>
+      <p><strong>February 24 - May 26, 2026</strong></p>
+      <hr>
+      <p><strong>Sunset Bend Street Stock Road Course Challenge</strong></p>
+      <p><strong>Thursdays</strong></p>
+      <p><strong>9:00 PM EST</strong></p>
+      <p>Asphalt Street Stocks on <strong>Road Courses</strong></p>
+      <p><strong>January 15 - March 5, 2026</strong></p>
+      <hr>
+      <p><strong>Saturday Night Sports Car Series</strong></p>
+      <p><strong>Saturdays</strong></p>
+      <p><strong>8:30 PM EST</strong></p>
+      <p>Multi-Class <strong>GT3 & LMP2</strong> on <strong>Asphalt Road Courses</strong></p>
+      <p><strong>February 28 - May 9, 2026</strong></p>
+      <hr>
+      <p><strong>More info, rules, and sign-ups in the channel categories!</strong></p>
+      <p>Get your teams ready, spread the word, and prepare for another incredible season of racing with <strong>Prodigy Racing Association</strong>.</p>
+      <p><strong>Let's make 2026 our biggest season yet!</strong></p>
+      <p><a href="http://discord.gg/pra">http://discord.gg/pra</a></p>
+      <p><a href="http://gridfinder.com/c/ProdigyRacingAssociation">http://gridfinder.com/c/ProdigyRacingAssociation</a></p>
+    </div>
+  </div>
+
+</body>
+</html>

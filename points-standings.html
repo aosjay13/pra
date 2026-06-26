@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prodigy Racing Association - Points Standings</title>
+    <style>
+        /* Copy styles from index.html */
+        :root {
+            --pra-red: #cc0000;
+            --pra-red-dark: #a30000;
+            --pra-dark: #0a0a0a;
+            --pra-bg: #121212;
+            --pra-card-bg: #1e1e1e;
+            --pra-border: #333;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --box-red-bg: #2a0a0a;
+            --box-blue-bg: #0a1a2a;
+            --box-blue-border: #0078d4;
+        }
+
+        html {
+            background-color: var(--pra-bg);
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: var(--pra-bg);
+            margin: 0;
+            padding: 10px;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            color: var(--pra-red);
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .league-selection {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .series-select {
+            display: none;
+        }
+
+        select {
+            background-color: var(--pra-card-bg);
+            color: var(--text-main);
+            border: 2px solid var(--pra-border);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:hover, select:focus {
+            border-color: var(--pra-red);
+            outline: none;
+        }
+
+        option {
+            background-color: var(--pra-bg);
+            color: var(--text-main);
+        }
+
+        .embed-container {
+            width: 100%;
+            margin: auto;
+            height: 90vh;
+            background-color: black;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        iframe {
+            width: 100%;
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            scrolling: auto;
+        }
+
+        /* Media queries for responsiveness */
+        @media (max-width: 768px) {
+            .league-selection {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .embed-container {
+                height: 80vh;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            select {
+                font-size: 0.9em;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .embed-container {
+                height: 70vh;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            select {
+                font-size: 0.8em;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="page-title">Prodigy Racing Association - Points Standings</h1>
+    </header>
+
+    <section class="league-selection">
+        <select id="game-select">
+            <option value="iracing" selected>iRacing</option>
+            <option value="ams2">Automobilista 2</option>
+            <option value="psnWreckfest">PSN Wreckfest</option>
+            <option value="gt7">Gran Turismo 7</option>
+        </select>
+        <select id="series-select" class="series-select">
+            <!-- Options will be populated by JavaScript -->
+        </select>
+    </section>
+
+    <div id="embed-container" class="embed-container">
+        <iframe id="standings-embed" src="https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&Item='PSN%20GT7%20ISCS%20S5'!A1%3AS62&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0" allowfullscreen scrolling="auto"></iframe>
+    </div>
+
+    <script>
+        const select = document.getElementById('game-select');
+        const seriesSelect = document.getElementById('series-select');
+        const embedContainer = document.getElementById('embed-container');
+        const pageTitle = document.getElementById('page-title');
+
+        // Placeholder embed URLs for each game - replace with actual OneDrive embed URLs for latest points standings
+        const embedUrls = {
+            iracing: {
+                HobbyStockSeries: {
+                    raceResults: 'https://www.simracerhub.com/scoring/season_race.php?series_id=12639&ifn=1',
+                    pointsStandings: 'https://www.simracerhub.com/scoring/season_standings.php?series_id=12639&ifn=1'
+                },
+                CrownJewelLateModelSeries: {
+                    raceResults: 'https://www.simracerhub.com/scoring/season_race.php?series_id=13620&ifn=1',
+                    pointsStandings: 'https://www.simracerhub.com/scoring/season_standings.php?series_id=13620&ifn=1'
+                },
+                AsphaltAssaultSeries: {
+                    raceResults: 'https://www.simracerhub.com/scoring/season_race.php?series_id=13127&ifn=1',
+                    pointsStandings: 'https://www.simracerhub.com/scoring/season_standings.php?series_id=13127&ifn=1'
+                },
+                LateModelStockSeries: {
+                    raceResults: 'https://www.simracerhub.com/scoring/season_race.php?series_id=13128&ifn=1',
+                    pointsStandings: 'https://www.simracerhub.com/scoring/season_standings.php?series_id=13128&ifn=1'
+                },
+                SuperLateModelSeries: {
+                    raceResults: 'https://www.simracerhub.com/scoring/season_race.php?series_id=12765&ifn=1',
+                    pointsStandings: 'https://www.simracerhub.com/scoring/season_standings.php?series_id=12765&ifn=1'
+                },
+                VisionCorsaIndyCarSeries: {
+                    raceResults: 'https://www.simracerhub.com/scoring/season_race.php?series_id=12932&ifn=1',
+                    pointsStandings: 'https://www.simracerhub.com/scoring/season_standings.php?series_id=12932&ifn=1'
+                },
+                SunsetBendStreetStockRoadCourseChallenge: {
+                    raceResults: 'https://www.simracerhub.com/scoring/season_race.php?series_id=13402&ifn=1',
+                    pointsStandings: 'https://www.simracerhub.com/scoring/season_standings.php?series_id=13402&ifn=1'
+                },
+                SportsCarSeries: {
+                    raceResults: 'https://www.simracerhub.com/scoring/season_race.php?series_id=12881&ifn=1',
+                    pointsStandings: 'https://www.simracerhub.com/scoring/season_standings.php?series_id=12881&ifn=1'
+                },
+                GridFinderNostalgiaSeries: {
+                    raceResults: 'https://www.simracerhub.com/scoring/season_race.php?series_id=13619&ifn=1',
+                    pointsStandings: 'https://www.simracerhub.com/scoring/season_standings.php?series_id=13619&ifn=1'
+                }
+            },
+            ams2: {
+                GT3: 'https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&ActiveCell=\'AMS2%20GT3%20Series%20S1\'!A1&Item=\'AMS2%20GT3%20Series%20S1\'!A1%3AS5&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0',
+                GT4: 'https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&ActiveCell=\'AMS2%20GT4%20Series%20S1\'!A1&Item=\'AMS2%20GT4%20Series%20S1\'!A1%3AS3&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0'
+            },
+            psnWreckfest: 'https://i.imgur.com/C0PhSMs.png',
+            gt7: 'https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&Item=\'PSN%20GT7%20ISCS%20S5\'!A1%3AS62&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0'
+        };
+
+        function updateEmbed(game, series = null) {
+            embedContainer.innerHTML = '';
+            pageTitle.textContent = 'Prodigy Racing Association - Points Standings';
+
+            if (game === 'iracing' && (series === 'HobbyStockSeries' || series === 'CrownJewelLateModelSeries' || series === 'AsphaltAssaultSeries' || series === 'LateModelStockSeries' || series === 'SuperLateModelSeries' || series === 'VisionCorsaIndyCarSeries' || series === 'SunsetBendStreetStockRoadCourseChallenge' || series === 'SportsCarSeries' || series === 'GridFinderNostalgiaSeries')) {
+                pageTitle.textContent = 'Prodigy Racing Association - Latest Race Results and Points Standings';
+                // Add race results iframe
+                const raceResultsIframe = document.createElement('iframe');
+                raceResultsIframe.src = embedUrls[game][series].raceResults;
+                if (series === 'LateModelStockSeries') {
+                    raceResultsIframe.width = '800';
+                    raceResultsIframe.height = '400';
+                } else if (series === 'SunsetBendStreetStockRoadCourseChallenge') {
+                    raceResultsIframe.width = '1600';
+                    raceResultsIframe.height = '1000';
+                } else {
+                    raceResultsIframe.width = '1920';
+                    raceResultsIframe.height = '1080';
+                }
+                raceResultsIframe.scrolling = 'auto';
+                embedContainer.appendChild(raceResultsIframe);
+
+                // Add points standings iframe
+                const pointsIframe = document.createElement('iframe');
+                pointsIframe.src = embedUrls[game][series].pointsStandings;
+                if (series === 'SunsetBendStreetStockRoadCourseChallenge') {
+                    pointsIframe.width = '1600';
+                    pointsIframe.height = '800';
+                } else {
+                    pointsIframe.width = '1920';
+                    pointsIframe.height = '1080';
+                }
+                pointsIframe.scrolling = 'auto';
+                embedContainer.appendChild(pointsIframe);
+            } else if (typeof embedUrls[game] === 'object' && series) {
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrls[game][series];
+                iframe.scrolling = 'auto';
+                embedContainer.appendChild(iframe);
+            } else if (game === 'psnWreckfest') {
+                const congratsDiv = document.createElement('div');
+                congratsDiv.textContent = 'Congratulations I-think-I-can-W on another championship in PRA PSN Wreckfest!';
+                congratsDiv.style.textAlign = 'center';
+                congratsDiv.style.marginBottom = '10px';
+                congratsDiv.style.fontSize = '1.2em';
+                congratsDiv.style.color = 'var(--text-main)';
+                embedContainer.appendChild(congratsDiv);
+
+                const img = document.createElement('img');
+                img.src = embedUrls[game];
+                img.style.width = '100%';
+                img.style.height = 'auto';
+                img.style.maxHeight = '100%';
+                img.style.objectFit = 'contain';
+                embedContainer.appendChild(img);
+            } else if (typeof embedUrls[game] === 'string') {
+                const iframe = document.createElement('iframe');
+                iframe.src = embedUrls[game];
+                iframe.scrolling = 'auto';
+                embedContainer.appendChild(iframe);
+            }
+        }
+
+        function updateSeriesSelect(game) {
+            seriesSelect.innerHTML = '';
+            if (embedUrls[game] && typeof embedUrls[game] === 'object') {
+                seriesSelect.style.display = 'block';
+                Object.keys(embedUrls[game]).forEach(series => {
+                    const option = document.createElement('option');
+                    option.value = series;
+                    if (series === 'HobbyStockSeries') {
+                        option.textContent = 'Hobby Stock Showdown';
+                    } else if (series === 'CrownJewelLateModelSeries') {
+                        option.textContent = 'Crown Jewel Late Model Series';
+                    } else if (series === 'AsphaltAssaultSeries') {
+                        option.textContent = 'Asphalt Assault Series';
+                    } else if (series === 'LateModelStockSeries') {
+                        option.textContent = 'Late Model Stock Series';
+                    } else if (series === 'SuperLateModelSeries') {
+                        option.textContent = 'Super Late Model Series';
+                    } else if (series === 'VisionCorsaIndyCarSeries') {
+                        option.textContent = 'Vision Corsa Indy Car Series';
+                    } else if (series === 'SunsetBendStreetStockRoadCourseChallenge') {
+                        option.textContent = 'Sunset Bend Street Stock Road Course Challenge';
+                    } else if (series === 'SportsCarSeries') {
+                        option.textContent = 'Sports Car Series';
+                    } else if (series === 'GridFinderNostalgiaSeries') {
+                        option.textContent = 'Grid Finder Nostalgia Series';
+                    } else {
+                        option.textContent = series.replace(/Series$/, ' Series');
+                    }
+                    seriesSelect.appendChild(option);
+                });
+                seriesSelect.value = Object.keys(embedUrls[game])[0]; // Select first series
+                updateEmbed(game, seriesSelect.value);
+            } else {
+                seriesSelect.style.display = 'none';
+                updateEmbed(game);
+            }
+        }
+
+        select.addEventListener('change', () => {
+            const game = select.value;
+            updateSeriesSelect(game);
+        });
+
+        seriesSelect.addEventListener('change', () => {
+            const game = select.value;
+            const series = seriesSelect.value;
+            updateEmbed(game, series);
+        });
+
+        // Initialize
+        updateSeriesSelect('iracing');
+    </script>
+</body>
+</html></content>
+<parameter name="filePath">/workspaces/javascript/points-standings.html

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* --- FORCED SCROLLBAR SETTINGS --- */
+  body::-webkit-scrollbar { width: 16px; }
+  body::-webkit-scrollbar-track { background: #1a1a1a; border-left: 1px solid #333; }
+  body::-webkit-scrollbar-thumb { background-color: #555; border-radius: 8px; border: 3px solid #1a1a1a; }
+  body::-webkit-scrollbar-thumb:hover { background-color: #777; }
+  html { scrollbar-width: auto; scrollbar-color: #555 #1a1a1a; }
+  /* ---------------------------------- */
+
+  /* GRID FINDER THEME COLORS */
+  :root {
+    --gf-bg: #121212;      /* Main Background */
+    --gf-card: #1e1e1e;    /* Card Background */
+    --gf-brand: #FF3D00;   /* Official GF Orange/Red */
+    --gf-brand-hover: #D93300;
+    --gf-text: #ffffff;
+    --gf-text-muted: #a0a0a0;
+  }
+
+  /* General Page Settings */
+  body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--gf-text);
+    background-color: var(--gf-bg);
+    margin: 0;
+    padding: 40px 20px;
+    padding-bottom: 80px; 
+    overflow-y: scroll;
+    text-align: center;
+  }
+
+  /* Container for the main content */
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* Logo Image */
+  .gf-logo {
+    max-width: 250px;
+    height: auto;
+    margin-bottom: 20px;
+    /* Optional: Drop shadow to make it pop */
+    filter: drop-shadow(0 0 10px rgba(255, 61, 0, 0.2));
+  }
+
+  /* Headings */
+  h1 {
+    text-transform: uppercase;
+    font-size: 2.2em;
+    margin: 10px 0;
+    letter-spacing: 1px;
+    color: var(--gf-text);
+  }
+
+  h2 {
+    font-size: 1.1em;
+    color: var(--gf-text-muted);
+    font-weight: normal;
+    margin-bottom: 30px;
+    margin-top: 0;
+  }
+
+  /* The Main Call to Action Card */
+  .action-card {
+    background-color: var(--gf-card);
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    margin-bottom: 40px;
+    transition: transform 0.2s ease;
+  }
+
+  .action-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--gf-brand);
+  }
+
+  /* CTA Button */
+  .gf-button {
+    display: inline-block;
+    background-color: var(--gf-brand);
+    color: #fff; /* White text on this orange allows for good contrast */
+    font-size: 1.2em;
+    font-weight: 800;
+    padding: 15px 35px;
+    text-decoration: none;
+    border-radius: 50px; /* Pill shape */
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(255, 61, 0, 0.4);
+  }
+
+  .gf-button:hover {
+    background-color: var(--gf-brand-hover);
+    box-shadow: 0 6px 20px rgba(255, 61, 0, 0.6);
+    transform: scale(1.02);
+  }
+
+  /* Features Grid */
+  .features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .feature-item {
+    background-color: var(--gf-card);
+    padding: 15px;
+    border-radius: 8px;
+    width: 140px;
+    border: 1px solid #333;
+  }
+
+  .feature-icon {
+    font-size: 1.5em;
+    color: var(--gf-brand);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .feature-text {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: var(--gf-text);
+  }
+
+  /* Footer */
+  .footer {
+    font-size: 0.8em;
+    color: #555;
+    margin-top: 60px;
+    border-top: 1px solid #222;
+    padding-top: 20px;
+  }
+
+</style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Grid Finder Logo (Using the Light/Stacked version provided) -->
+    <img src="https://i.imgur.com/OLb4DWH.png" alt="Grid Finder" class="gf-logo">
+
+    <h1>Official League Hub</h1>
+    <h2>Join Prodigy Racing Association on Grid Finder to handle all your racing logistics.</h2>
+
+    <!-- Main Action Card -->
+    <div class="action-card">
+      <p style="margin-bottom: 25px; font-size: 1.1em;">
+        Sign up for events, track your championship standings, and view upcoming schedules all in one place.
+      </p>
+      
+      <a href="https://www.gridfinder.com/c/ProdigyRacingAssociation" target="_blank" class="gf-button">
+        Join Our League
+      </a>
+    </div>
+
+    <!-- Feature Highlights -->
+    <div class="features">
+      <div class="feature-item">
+        <span class="feature-icon">📅</span>
+        <span class="feature-text">Full Season Schedules</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">✍️</span>
+        <span class="feature-text">One-Click Sign Ups</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🏆</span>
+        <span class="feature-text">Live Standings</span>
+      </div>
+    </div>
+
+    <div class="footer">
+      &copy; Prodigy Racing Association
+    </div>
+
+  </div>
+
+</body>
+</html>

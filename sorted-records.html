@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prodigy Racing Association - League Records</title>
+    <style>
+        /* Copy styles from index.html */
+        :root {
+            --pra-red: #cc0000;
+            --pra-red-dark: #a30000;
+            --pra-dark: #0a0a0a;
+            --pra-bg: #121212;
+            --pra-card-bg: #1e1e1e;
+            --pra-border: #333;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --box-red-bg: #2a0a0a;
+            --box-blue-bg: #0a1a2a;
+            --box-blue-border: #0078d4;
+        }
+
+        html {
+            background-color: black;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-main);
+            background-color: black;
+            margin: 0;
+            padding: 10px;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            color: var(--pra-red);
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .league-selection {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 10px;
+            flex-shrink: 0;
+        }
+
+        .series-select {
+            display: none;
+        }
+
+        .season-select {
+            display: none;
+        }
+
+        select {
+            background-color: var(--pra-card-bg);
+            color: var(--text-main);
+            border: 2px solid var(--pra-border);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:hover, select:focus {
+            border-color: var(--pra-red);
+            outline: none;
+        }
+
+        option {
+            background-color: var(--pra-bg);
+            color: var(--text-main);
+        }
+
+        .embed-container {
+            width: 100%;
+            margin: auto;
+            height: 90vh;
+            background-color: black;
+            overflow: hidden;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 0;
+            display: block;
+            overflow: auto;
+        }
+
+        /* Media queries for responsiveness */
+        @media (max-width: 768px) {
+            .league-selection {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .embed-container {
+                height: 80vh;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            select {
+                font-size: 0.9em;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .embed-container {
+                height: 70vh;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            select {
+                font-size: 0.8em;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Prodigy Racing Association - League Records</h1>
+    </header>
+
+    <section class="league-selection">
+        <select id="league-select">
+            <option value="overall">Overall Stats</option>
+            <option value="iracing">iRacing</option>
+            <option value="automobilista">Automobilista</option>
+        </select>
+        <select id="series-select" class="series-select">
+            <!-- Options will be populated by JavaScript -->
+        </select>
+        <select id="season-select" class="season-select">
+            <!-- Options will be populated by JavaScript -->
+        </select>
+    </section>
+
+    <div class="embed-container">
+        <iframe id="excel-embed" src="https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&ActiveCell='PRA%20Overall%20Records'!A1&Item='PRA%20Overall%20Records'!A1%3AS2000&wdHideGridlines=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0" allowfullscreen scrolling="auto"></iframe>
+    </div>
+
+    <script>
+        const select = document.getElementById('league-select');
+        const seriesSelect = document.getElementById('series-select');
+        const seasonSelect = document.getElementById('season-select');
+        const iframe = document.getElementById('excel-embed');
+
+        // Placeholder embed URLs for each league - replace with actual OneDrive embed URLs
+        const embedUrls = {
+            overall: 'https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&AllowTyping=True&ActiveCell=\'PRA%20Overall%20Stats\'!S1&Item=\'PRA%20Overall%20Stats\'!S1%3AAH7&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0',
+            iracing: {
+                overall: 'https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&ActiveCell=\'iRacing%20Overall%20Records\'!A1&Item=\'iRacing%20Overall%20Records\'!A1%3AP2000&wdHideGridlines=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0',
+                series: {
+                    overall: 'https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&ActiveCell=\'iRacing%20Series%20Records\'!A1&Item=\'iRacing%20Series%20Records\'!A1%3AP2000&wdHideGridlines=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0',
+                    season1: 'https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&ActiveCell=\'iRacing%20Series%20S1%20Records\'!A1&Item=\'iRacing%20Series%20S1%20Records\'!A1%3AS100&wdHideGridlines=True&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0'
+                }
+            },
+            automobilista: {
+                overall: 'https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&ActiveCell=\'AMS2%20Overall%20Stats\'!S1&Item=\'AMS2%20Overall%20Stats\'!S1%3AAH1000&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0',
+                GT3: {
+                    overall: 'https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&ActiveCell=\'AMS2%20GT3%20Series%20Stats\'!S1&Item=\'AMS2%20GT3%20Series%20Stats\'!S1%3AAH1000&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0',
+                    season1: 'https://1drv.ms/x/c/05302a90f4233151/IQTYu2cXlgBNQ6zNxjWsSlkCAezlNu9j5VFhXI9fy66Hv3w?em=2&wdAllowInteractivity=False&ActiveCell=\'AMS2%20GT3%20Series%20S1\'!AL1&Item=\'AMS2%20GT3%20Series%20S1\'!AL1%3ABA1000&wdInConfigurator=True&wdInConfigurator=True&edaebf=rslc0'
+                }
+            }
+        };
+
+        function updateSeriesSelect(league) {
+            seriesSelect.innerHTML = '';
+            if (league !== 'overall' && embedUrls[league]) {
+                seriesSelect.style.display = 'block';
+                Object.keys(embedUrls[league]).forEach(series => {
+                    const option = document.createElement('option');
+                    option.value = series;
+                    option.textContent = series.charAt(0).toUpperCase() + series.slice(1).replace('series', 'Series ');
+                    seriesSelect.appendChild(option);
+                });
+                seriesSelect.value = Object.keys(embedUrls[league])[0]; // Select first series
+                updateSeasonSelect(league, seriesSelect.value);
+            } else {
+                seriesSelect.style.display = 'none';
+                seasonSelect.style.display = 'none';
+                iframe.src = embedUrls[league];
+            }
+        }
+
+        function updateSeasonSelect(league, series) {
+            seasonSelect.innerHTML = '';
+            if (embedUrls[league] && embedUrls[league][series] && typeof embedUrls[league][series] === 'object') {
+                seasonSelect.style.display = 'block';
+                Object.keys(embedUrls[league][series]).forEach(season => {
+                    const option = document.createElement('option');
+                    option.value = season;
+                    if (season === 'overall') {
+                        option.textContent = 'Overall';
+                    } else {
+                        option.textContent = season.charAt(0).toUpperCase() + season.slice(1).replace('season', 'Season ');
+                    }
+                    seasonSelect.appendChild(option);
+                });
+                seasonSelect.value = Object.keys(embedUrls[league][series])[0];
+                iframe.src = embedUrls[league][series][seasonSelect.value];
+            } else {
+                seasonSelect.style.display = 'none';
+                if (typeof embedUrls[league][series] === 'string') {
+                    iframe.src = embedUrls[league][series];
+                }
+            }
+        }
+
+        select.addEventListener('change', () => {
+            const league = select.value;
+            updateSeriesSelect(league);
+        });
+
+        seriesSelect.addEventListener('change', () => {
+            const league = select.value;
+            const series = seriesSelect.value;
+            updateSeasonSelect(league, series);
+        });
+
+        seasonSelect.addEventListener('change', () => {
+            const league = select.value;
+            const series = seriesSelect.value;
+            const season = seasonSelect.value;
+            iframe.src = embedUrls[league][series][season];
+        });
+
+        // Initialize
+        updateSeriesSelect('overall');
+    </script>
+</body>
+</html>
