@@ -1,7 +1,7 @@
 {
-  "name": "javascript",
+  "name": "pra-website",
   "version": "1.0.0",
-  "description": "This book will teach you the basics of programming and Javascript. Whether you are an experienced programmer or not, this book is intended for everyone who wishes to learn the JavaScript programming language.",
+  "description": "Official website for the Prodigy Racing Association (PRA) — a sim racing community hosting competitive leagues across iRacing, Wreckfest, Gran Turismo 7, and Automobilista 2.",
   "scripts": {
     "test": "echo \"No test suite configured\""
   },

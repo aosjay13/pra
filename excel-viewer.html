@@ -6,35 +6,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Excel Viewer from OneDrive</title>
-    <style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
         /* --- GLOBAL STYLES (DARK MODE) --- */
         :root {
-            --pra-red: #cc0000;
-            --pra-red-dark: #a30000;
-            --pra-dark: #0a0a0a;      /* Darker Header */
-            --pra-bg: #121212;        /* Main Background */
-            --pra-card-bg: #1e1e1e;   /* Card Background */
-            --pra-border: #333;       /* Border Color */
+            --pra-red: #e63946;
+            --pra-red-dark: #c1222f;
+            --pra-dark: #13131e;      /* Darker Header */
+            --pra-bg: #0d0d14;        /* Main Background */
+            --pra-card-bg: #1a1a28;   /* Card Background */
+            --pra-border: #2a2a3d;       /* Border Color */
             
             /* Text Colors */
-            --text-main: #e0e0e0;
-            --text-muted: #a0a0a0;
+            --text-main: #eeeef5;
+            --text-muted: #9a9ab4;
             
             /* Special Box Colors (Dark Variants) */
-            --box-red-bg: #2a0a0a;
-            --box-blue-bg: #0a1a2a;
-            --box-blue-border: #0078d4;
+            --box-red-bg: #241019;
+            --box-blue-bg: #0d1f2b;
+            --box-blue-border: #00b4d8;
         }
 
         /* Force Scrollbar (Dark Themed) */
         body::-webkit-scrollbar { width: 16px; }
         body::-webkit-scrollbar-track { background: var(--pra-bg); border-left: 1px solid var(--pra-border); }
-        body::-webkit-scrollbar-thumb { background-color: #444; border-radius: 8px; border: 3px solid var(--pra-bg); }
+        body::-webkit-scrollbar-thumb { background-color: #2e2e42; border-radius: 8px; border: 3px solid var(--pra-bg); }
         
         /* FIX: Explicitly set HTML background to match body to prevent white lines at top/bottom */
         html { 
             scrollbar-width: auto; 
-            scrollbar-color: #444 var(--pra-bg); 
+            scrollbar-color: #2e2e42 var(--pra-bg); 
             background-color: var(--pra-bg); 
             margin: 0;
             padding: 0;
@@ -42,7 +45,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
             line-height: 1.6;
             color: var(--text-main);
             background-color: var(--pra-bg);

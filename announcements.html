@@ -3,35 +3,38 @@
 <head>
 <link rel="icon" type="image/png" href="PRA.png">
 <meta property="og:image" content="https://aosjay13.github.io/pra/PRA.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   /* --- GLOBAL STYLES (DARK MODE) --- */
   :root {
-    --pra-red: #cc0000;
-    --pra-red-dark: #a30000;
-    --pra-dark: #0a0a0a;      /* Darker Header */
-    --pra-bg: #121212;        /* Main Background */
-    --pra-card-bg: #1e1e1e;   /* Card Background */
-    --pra-border: #333;       /* Border Color */
+    --pra-red: #e63946;
+    --pra-red-dark: #c1222f;
+    --pra-dark: #13131e;      /* Darker Header */
+    --pra-bg: #0d0d14;        /* Main Background */
+    --pra-card-bg: #1a1a28;   /* Card Background */
+    --pra-border: #2a2a3d;       /* Border Color */
     
     /* Text Colors */
-    --text-main: #e0e0e0;
-    --text-muted: #a0a0a0;
+    --text-main: #eeeef5;
+    --text-muted: #9a9ab4;
     
     /* Special Box Colors (Dark Variants) */
-    --box-red-bg: #2a0a0a;
-    --box-blue-bg: #0a1a2a;
-    --box-blue-border: #0078d4;
+    --box-red-bg: #241019;
+    --box-blue-bg: #0d1f2b;
+    --box-blue-border: #00b4d8;
   }
 
   /* Force Scrollbar (Dark Themed) */
   body::-webkit-scrollbar { width: 16px; }
   body::-webkit-scrollbar-track { background: var(--pra-bg); border-left: 1px solid var(--pra-border); }
-  body::-webkit-scrollbar-thumb { background-color: #444; border-radius: 8px; border: 3px solid var(--pra-bg); }
+  body::-webkit-scrollbar-thumb { background-color: #2e2e42; border-radius: 8px; border: 3px solid var(--pra-bg); }
   
   /* FIX: Explicitly set HTML background to match body to prevent white lines at top/bottom */
   html { 
     scrollbar-width: auto; 
-    scrollbar-color: #444 var(--pra-bg); 
+    scrollbar-color: #2e2e42 var(--pra-bg); 
     background-color: var(--pra-bg); 
     margin: 0;
     padding: 0;
@@ -39,7 +42,7 @@
   }
 
   body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
     line-height: 1.6;
     color: var(--text-main);
     background-color: var(--pra-bg);
@@ -88,9 +91,16 @@
   }
 
   /* --- TYPOGRAPHY & UI --- */
+  /* Announcements quote bare URLs as link text; let them break rather than
+     forcing the page wider than the screen. */
+  a { overflow-wrap: anywhere; }
+
+  /* The full-bleed rules below are 100vw, which includes the scrollbar. */
+  body { overflow-x: hidden; }
+
   h1 { color: var(--pra-red); text-transform: uppercase; border-bottom: 3px solid var(--pra-border); padding-bottom: 10px; margin-top: 0; }
   h2 { color: white; margin-top: 30px; font-weight: bold; border-bottom: 1px solid var(--pra-border); padding-bottom: 5px; }
-  h3 { color: #ccc; font-size: 1.1em; margin-top: 20px; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
+  h3 { color: #bfbfd4; font-size: 1.1em; margin-top: 20px; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
   
   p { color: var(--text-main); }
   
@@ -116,8 +126,8 @@
   .btn-gf { background-color: #FF3D00; }
   .btn-gf:hover { background-color: #D93300; }
 
-  .btn-back { background-color: #333; margin-bottom: 15px; color: #ccc; }
-  .btn-back:hover { background-color: #444; }
+  .btn-back { background-color: #2a2a3d; margin-bottom: 15px; color: #bfbfd4; }
+  .btn-back:hover { background-color: #2e2e42; }
 
 </style>
 <script>
