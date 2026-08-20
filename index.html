@@ -790,6 +790,85 @@
   .discord-foot a { font-size: 0.85rem; font-weight: 700; color: var(--discord); }
   .discord-foot a:hover { text-decoration: underline; }
 
+  /* ── Support / Patreon ─────────────────────── */
+  .support-card {
+    position: relative;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 36px;
+    border: 1px solid rgba(244, 162, 40, 0.28);
+    border-radius: var(--radius-card);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .support-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-gold), var(--accent-red));
+  }
+
+  .support-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 18px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    background: rgba(244, 162, 40, 0.12);
+    border: 1px solid rgba(244, 162, 40, 0.28);
+  }
+
+  .support-card .eyebrow { color: var(--accent-gold); }
+
+  .support-card h2 { margin-bottom: 14px; }
+
+  .support-card p.lead { margin: 0 auto 12px; max-width: 560px; }
+
+  .support-points {
+    list-style: none;
+    margin: 26px auto 30px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 12px;
+    max-width: 640px;
+  }
+
+  .support-points li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--bg-elevated);
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: var(--ink-1);
+  }
+
+  .btn-gold {
+    background: var(--accent-gold);
+    color: #2a1a02;
+    border-color: var(--accent-gold);
+  }
+  .btn-gold:hover {
+    box-shadow: 0 0 20px rgba(244, 162, 40, 0.3);
+    opacity: 0.92;
+  }
+
+  @media (max-width: 620px) {
+    .support-card { padding: 32px 22px; }
+  }
+
   /* ── Footer ────────────────────────────────── */
   footer {
     border-top: 1px solid var(--border);
@@ -923,6 +1002,7 @@
       <a href="#about">About</a>
       <a href="#series">Where We Race</a>
       <a href="#community">Community</a>
+      <a href="#support">Support</a>
     </div>
 
     <div class="topbar-actions">
@@ -937,7 +1017,9 @@
     <a href="#about">📌 About</a>
     <a href="#series">🎮 Where We Race</a>
     <a href="#community">💬 Community</a>
+    <a href="#support">💛 Support PRA</a>
     <hr>
+    <a href="https://www.patreon.com/cw/prodigyracing" target="_blank" rel="noopener">🧡 Patreon</a>
     <a href="https://phoenix-racing-league-manager.vercel.app/standings" target="_blank" rel="noopener">🏆 Standings</a>
     <a href="https://phoenix-racing-league-manager.vercel.app/schedule" target="_blank" rel="noopener">📅 Schedule</a>
     <a href="https://phoenix-racing-league-manager.vercel.app/" target="_blank" rel="noopener">📊 Stats Hub</a>
@@ -1214,6 +1296,37 @@
     </div>
   </section>
 
+  <!-- ── Support / Patreon ────────────────────── -->
+  <section class="band band-alt" id="support">
+    <div class="wrap">
+      <div class="support-card reveal">
+        <span class="support-icon" aria-hidden="true">💛</span>
+        <p class="eyebrow">Support the League</p>
+        <h2>PRA Patreon is live.</h2>
+        <p class="lead">
+          Want to help support PRA and get some extra perks along the way? We've
+          officially launched the PRA Patreon, with multiple membership tiers to
+          choose from — each with its own benefits.
+        </p>
+        <p class="lead">
+          This is just the beginning; there's a lot more planned for our Patreon
+          members as PRA grows. Your support helps us keep putting on races,
+          special events, broadcasts, and everything else that makes PRA what it is.
+        </p>
+
+        <ul class="support-points">
+          <li><span aria-hidden="true">🎟</span> Multiple membership tiers</li>
+          <li><span aria-hidden="true">🎁</span> Perks at every tier</li>
+          <li><span aria-hidden="true">📺</span> Keeps races &amp; broadcasts running</li>
+        </ul>
+
+        <a class="btn btn-gold btn-lg" href="https://www.patreon.com/cw/prodigyracing" target="_blank" rel="noopener">
+          Become a Patron ↗
+        </a>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer>
@@ -1240,6 +1353,7 @@
           <li><a href="calendar.html">Calendar</a></li>
           <li><a href="https://discord.gg/pra" target="_blank" rel="noopener">Discord ↗</a></li>
           <li><a href="https://gridfinder.com/c/ProdigyRacingAssociation" target="_blank" rel="noopener">Grid Finder ↗</a></li>
+          <li><a href="https://www.patreon.com/cw/prodigyracing" target="_blank" rel="noopener">Patreon ↗</a></li>
         </ul>
       </div>
 
@@ -1259,7 +1373,8 @@
       <p>
         <a href="https://discord.gg/pra" target="_blank" rel="noopener">Discord</a> ·
         <a href="https://gridfinder.com/c/ProdigyRacingAssociation" target="_blank" rel="noopener">Grid Finder</a> ·
-        <a href="https://phoenix-racing-league-manager.vercel.app/" target="_blank" rel="noopener">Stats Hub</a>
+        <a href="https://phoenix-racing-league-manager.vercel.app/" target="_blank" rel="noopener">Stats Hub</a> ·
+        <a href="https://www.patreon.com/cw/prodigyracing" target="_blank" rel="noopener">Patreon</a>
       </p>
     </div>
   </div>
