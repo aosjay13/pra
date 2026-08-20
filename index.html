@@ -643,7 +643,7 @@
 
   .series-list {
     list-style: none;
-    margin: 0 0 20px;
+    margin: 0;
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -666,7 +666,14 @@
     flex-shrink: 0;
   }
 
-  .game-card .btn { margin-top: auto; align-self: flex-start; }
+  .band-cta {
+    margin-top: 34px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
 
   /* ── Community / Discord ───────────────────── */
   .feature-stack { display: flex; flex-direction: column; gap: 16px; margin: 28px 0 32px; }
@@ -914,7 +921,6 @@
 
     <div class="topbar-nav">
       <a href="#about">About</a>
-      <a href="leagues.html">Leagues</a>
       <a href="#series">Where We Race</a>
       <a href="#community">Community</a>
     </div>
@@ -929,10 +935,11 @@
 
   <div class="mobile-menu" id="mobile-menu">
     <a href="#about">📌 About</a>
-    <a href="leagues.html">🏁 Leagues &amp; Schedules</a>
     <a href="#series">🎮 Where We Race</a>
     <a href="#community">💬 Community</a>
     <hr>
+    <a href="https://phoenix-racing-league-manager.vercel.app/standings" target="_blank" rel="noopener">🏆 Standings</a>
+    <a href="https://phoenix-racing-league-manager.vercel.app/schedule" target="_blank" rel="noopener">📅 Schedule</a>
     <a href="https://phoenix-racing-league-manager.vercel.app/" target="_blank" rel="noopener">📊 Stats Hub</a>
     <a href="https://discord.gg/pra" target="_blank" rel="noopener">🔗 Join Discord</a>
   </div>
@@ -959,11 +966,8 @@
         <a class="btn btn-discord btn-lg" href="https://discord.gg/pra" target="_blank" rel="noopener">
           Join the Paddock
         </a>
-        <a class="btn btn-primary btn-lg" href="https://phoenix-racing-league-manager.vercel.app/" target="_blank" rel="noopener">
+        <a class="btn btn-primary btn-lg" href="https://phoenix-racing-league-manager.vercel.app/standings" target="_blank" rel="noopener">
           🏆 View Standings
-        </a>
-        <a class="btn btn-ghost btn-lg" href="leagues.html">
-          🏁 Schedules &amp; Rulebook
         </a>
       </div>
 
@@ -1066,7 +1070,7 @@
         <h2>Where We Race</h2>
         <p class="lead">
           Active seasons and special events across four sims, seven nights a week.
-          Full weekly schedules and the rulebook live in the league hub.
+          Full schedules, results and standings live in the Stats Hub.
         </p>
       </div>
 
@@ -1082,7 +1086,6 @@
             <li><span class="tick" aria-hidden="true">▸</span> Sunset Bend Street Stock Challenge</li>
             <li><span class="tick" aria-hidden="true">▸</span> Saturday Night SportsCar Series</li>
           </ul>
-          <a class="btn btn-ghost" href="leagues.html">Enter Hub</a>
         </article>
 
         <article class="game-card float-up" style="animation-delay:60ms">
@@ -1093,7 +1096,6 @@
             <li><span class="tick" aria-hidden="true">▸</span> PSN Wreckfest</li>
             <li><span class="tick" aria-hidden="true">▸</span> PC Wreckfest</li>
           </ul>
-          <a class="btn btn-ghost" href="leagues.html">Enter Hub</a>
         </article>
 
         <article class="game-card float-up" style="animation-delay:120ms">
@@ -1103,7 +1105,6 @@
           <ul class="series-list">
             <li><span class="tick" aria-hidden="true">▸</span> International Sports Car Series</li>
           </ul>
-          <a class="btn btn-ghost" href="leagues.html">Enter Hub</a>
         </article>
 
         <article class="game-card float-up" style="animation-delay:180ms">
@@ -1113,8 +1114,16 @@
           <ul class="series-list">
             <li><span class="tick" aria-hidden="true">▸</span> Weekly AMS2 schedule</li>
           </ul>
-          <a class="btn btn-ghost" href="leagues.html">Enter Hub</a>
         </article>
+      </div>
+
+      <div class="band-cta">
+        <a class="btn btn-primary btn-lg" href="https://phoenix-racing-league-manager.vercel.app/schedule" target="_blank" rel="noopener">
+          📅 See the full schedule
+        </a>
+        <a class="btn btn-ghost btn-lg" href="https://phoenix-racing-league-manager.vercel.app/standings" target="_blank" rel="noopener">
+          🏆 Standings &amp; results
+        </a>
       </div>
     </div>
   </section>
@@ -1227,7 +1236,7 @@
       <div class="footer-col">
         <h3>League</h3>
         <ul>
-          <li><a href="leagues.html">Schedules &amp; Rulebook</a></li>
+          <li><a href="https://phoenix-racing-league-manager.vercel.app/schedule" target="_blank" rel="noopener">Schedule ↗</a></li>
           <li><a href="announcements.html">Announcements</a></li>
           <li><a href="calendar.html">Calendar</a></li>
           <li><a href="league-stats.html">League Stats</a></li>

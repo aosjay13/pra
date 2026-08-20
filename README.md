@@ -11,7 +11,6 @@ Official website for the Prodigy Racing Association (PRA) — a sim racing commu
 | File | Purpose |
 | --- | --- |
 | `index.html` | Landing page — league intro, platforms, community, and links out |
-| `leagues.html` | League hub — weekly schedules, series details, and the full rulebook |
 | `announcements.html` | League announcements |
 | `calendar.html` | Embedded race calendar |
 | `league-stats.html` | League stats, standings, and race results |
@@ -22,8 +21,9 @@ Official website for the Prodigy Racing Association (PRA) — a sim racing commu
 | `grid-finder.html` | Grid Finder sign-up splash |
 | `discord-link.html` | Discord invite splash |
 
-Driver stats, standings, and profiles live in the separate
-[Phoenix Racing League Manager](https://phoenix-racing-league-manager.vercel.app/).
+Schedules, standings, results, series details, and driver profiles all live in
+the [Phoenix Racing League Manager](https://phoenix-racing-league-manager.vercel.app/),
+which this site links out to. This repo holds the public-facing site only.
 
 ## Theme
 
