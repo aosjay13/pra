@@ -3,27 +3,30 @@
 <head>
 <link rel="icon" type="image/png" href="PRA.png">
 <meta property="og:image" content="https://aosjay13.github.io/pra/PRA.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   /* --- DISCORD THEME COLORS --- */
   :root {
-    --discord-bg: #313338;       /* Modern Discord Dark Background */
-    --discord-card: #2b2d31;     /* Card Background */
+    --discord-bg: #0d0d14;       /* PRA page background (Phoenix bg-0) */
+    --discord-card: #1a1a28;     /* PRA card surface (Phoenix bg-surface) */
     --discord-blurple: #5865F2;  /* Brand Color */
     --discord-blurple-dark: #4752c4;
-    --discord-text: #dbdee1;     /* Main Text */
-    --discord-text-muted: #949ba4;
+    --discord-text: #eeeef5;     /* PRA main text (Phoenix ink-0) */
+    --discord-text-muted: #9a9ab4;
     --discord-green: #23a559;    /* Online/Active Green */
   }
 
   /* --- SCROLLBAR SETTINGS --- */
   body::-webkit-scrollbar { width: 14px; }
-  body::-webkit-scrollbar-track { background: #2b2d31; }
-  body::-webkit-scrollbar-thumb { background-color: #1a1b1e; border-radius: 7px; border: 3px solid #2b2d31; }
-  html { scrollbar-width: auto; scrollbar-color: #1a1b1e #2b2d31; }
+  body::-webkit-scrollbar-track { background: #0d0d14; }
+  body::-webkit-scrollbar-thumb { background-color: #2e2e42; border-radius: 7px; border: 3px solid #0d0d14; }
+  html { scrollbar-width: auto; scrollbar-color: #2e2e42 #0d0d14; }
 
   /* General Page Settings */
   body {
-    font-family: 'gg sans', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: "gg sans", "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
     line-height: 1.5;
     color: var(--discord-text);
     background-color: var(--discord-bg);
